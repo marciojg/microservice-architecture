@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  product_database:
+    image: postgres # busca imagem do registry
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+    volumes:
+      - ./product_database/data:/var/lib/postgresql/data
+    ports:
+      - 5432
+  product_service:
+    build:
+      context: ./product_service
+      dockerfile: Dockerfile
+    environment: 
+      - RAILS_ENV=development
+    volumes:
+      - ./product_service:/product_service
+    ports:
+      - 1001:3000
+    links:
+      - product_database
+    depends_on:
+      - product_database
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf tmp/pids
+        bundle exec rake db:prepare
+        bundle exec rails server -b 0.0.0.0 -p 3000
