@@ -24,9 +24,12 @@ ActiveRecord::Schema.define(version: 2021_05_06_021733) do
   create_table "products", force: :cascade do |t|
     t.bigint "category_id"
     t.string "name", limit: 50, null: false
+    t.bigint "total_access", default: 0
+    t.decimal "value", precision: 32, scale: 8
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_products_on_category_id", unique: true
+    t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["total_access"], name: "index_products_on_total_access"
   end
 
   add_foreign_key "products", "categories"

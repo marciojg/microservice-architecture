@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CategoriesController < ApplicationController
-  before_action :set_category, only: [:show, :update, :destroy]
+  before_action :set_category, only: [:show, :update, :destroy, :products]
 
   # GET /categories
   def index
@@ -38,6 +38,15 @@ class CategoriesController < ApplicationController
   # DELETE /categories/1
   def destroy
     @category.destroy
+  end
+
+  def products
+    @search = @category.products.ransack(params[:q])
+                      
+    @search.sorts = 'total_access desc' if params[:popular] == 'true'
+    @products = @search.result
+
+    render json: @products
   end
 
   private

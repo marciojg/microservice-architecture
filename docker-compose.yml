@@ -6,7 +6,7 @@ services:
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./product_database/data:/var/lib/postgresql/data
     ports:

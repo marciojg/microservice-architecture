@@ -5,15 +5,20 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    @products = Product.joins(:category)
-                       .includes(:category)
-                       .ransack(params[:q]).result
+    @search = Product.ransack(params[:q])
+                      
+    @search.sorts = 'total_access desc' if params[:popular] == 'true'
+    @products = @search.result
 
     render json: @products
   end
 
   # GET /products/1
   def show
+    # TODO: Resiliencia aqui
+    @product.total_access += 1
+    @product.save
+
     render json: @product
   end
 
