@@ -5,4 +5,10 @@ class Product < ApplicationRecord
 
   validates :name, presence: true, 
                    length: { maximum: 50 }
+
+
+  def new_access!
+    self.total_access += 1
+    self.save!
+  end
 end
