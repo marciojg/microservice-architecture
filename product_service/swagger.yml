@@ -1,0 +1,351 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'product_service'
+
+host: 'localhost:1001'
+
+schemes:
+  - 'http'
+
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único.
+      attributes:
+        type: object
+        properties:
+          name: &product_name
+            description: Nome do produto
+            type: string
+            example: Camisa Azul
+          total_access: &product_total_access
+            description: Total de acessos recebidos
+            type: integer
+            example: 7
+          value: &product_value
+            description: Valor do produto
+            type: number
+            format: float
+            example: '16.097'
+          category_id: &product_category_id
+            description: Id da categoria associada
+            type: integer
+            example: 123
+          created_at:
+            type: string
+            format: date
+            example: '2020-05-11'
+          updated_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único.
+      attributes:
+        type: object
+        properties:
+          name: &category_name
+            description: Nome da Categoria
+            type: string
+            example: Masculino Adulto
+          created_at:
+            type: string
+            format: date
+            example: '2020-05-11'
+          updated_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+
+paths:
+  /products:
+    get:
+      tags:
+        - 'Products'
+      summary: Lista os produtos
+      description: |
+        Lista os produtos, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+        Existe também um filtro adicional que ordena os produtos por popularidade `?popular=true`
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: popular
+          type: boolean
+          default: true
+          description: Ordena a lista de produtos em ordem decrescente de popularidade
+        - in: query
+          name: q[name_cont]
+          type: string
+          default: azul
+          description: Exemplo de um filtro ransack que filtra produtos que possuam azul no nome
+      responses:
+        200:
+          description: Retorna uma lista de produtos
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Product'
+
+    post:
+      tags:
+        - 'Products'
+      summary: Cria um produto
+      description: Cria um produto e com seu contador de visualizações iniciando com zero.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              name: *product_name
+              total_access: *product_total_access
+              value: *product_value
+              category_id: *product_category_id
+
+      responses:
+        201: &product_post_response
+          description: Retorna o produto criado
+          schema:
+            $ref: '#/definitions/Product'
+
+        204: *product_post_response
+
+  /products/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+
+    get:
+      tags:
+        - 'Products'
+      summary: Exibe um produto
+      description: |
+        Exibe um produto e seus atributos
+        Acrescenta mais um no atributo `total_access` a cada request
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Retorna os detalhes de um produto
+          schema:
+            $ref: '#/definitions/Product'
+
+    patch: &patch_params
+      tags:
+        - 'Products'
+      summary: Altera um produto
+      description: Altera os dados do produto referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              name: *product_name
+              total_access: *product_total_access
+              value: *product_value
+              category_id: *product_category_id
+      responses:
+        200:
+          description: Retorna o produto alterado
+          schema:
+            $ref: '#/definitions/Product'
+
+    put: *patch_params
+
+    delete:
+      tags:
+        - 'Products'
+      summary: Deleta um produto
+      description: Deleta um produto referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        204:
+          description: No content
+
+  /categories:
+    get:
+      tags:
+        - 'Categories'
+      summary: Lista os categorias
+      description: |
+        Lista as categorias, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: q[name_cont]
+          type: string
+          default: masculino
+          description: Exemplo de um filtro ransack que filtra produtos que possuam masculino no nome
+      responses:
+        200:
+          description: Retorna uma lista de categorias
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Category'
+
+    post:
+      tags:
+        - 'Categories'
+      summary: Cria uma categoria
+      description: Cria uma categoria e seus detalhes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              name: *category_name
+
+      responses:
+        201: &category_post_response
+          description: Retorna o categoria criada
+          schema:
+            $ref: '#/definitions/Category'
+
+        204: *category_post_response
+
+  /categories/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+
+    get:
+      tags:
+        - 'Categories'
+      summary: Exibe uma categoria
+      description: Exibe uma categoria e seus atributos
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Retorna os detalhes de uma categoria
+          schema:
+            $ref: '#/definitions/Category'
+
+    patch: &category_update
+      tags:
+        - 'Categories'
+      summary: Altera uma categoria
+      description: Altera os dados da categoria referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              name: *category_name
+      responses:
+        200:
+          description: Retorna a categoria alterada
+          schema:
+            $ref: '#/definitions/Category'
+
+    put: *category_update
+
+    delete:
+      tags:
+        - 'Categories'
+      summary: Deleta uma categoria
+      description: Deleta uma categoria referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        204:
+          description: No content
+
+
+  /categories/{id}/products:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+
+    get:
+      tags:
+        - 'Categories'
+        - 'Products'
+      summary:
+        Consulta lista de produtos por categoria
+      description: |
+        Lista os produtos por categoria, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+        Existe também um filtro adicional que ordena os produtos por popularidade `?popular=true`
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: popular
+          type: boolean
+          default: true
+          description: Ordena a lista de produtos em ordem decrescente de popularidade
+        - in: query
+          name: q[name_cont]
+          type: string
+          default: azul
+          description: Exemplo de um filtro ransack que filtra produtos que possuam azul no nome
+      responses:
+        200:
+          description: Retorna uma lista de Products
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Product'

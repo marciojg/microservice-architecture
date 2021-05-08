@@ -3,7 +3,8 @@ version: '3'
 services:
   product_database:
     image: postgres # busca imagem do registry
-    environment: 
+    user: "${UID}:${GID}"
+    environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
@@ -15,7 +16,8 @@ services:
     build:
       context: ./product_service
       dockerfile: Dockerfile
-    environment: 
+    user: "${UID}:${GID}"
+    environment:
       - RAILS_ENV=development
     volumes:
       - ./product_service:/product_service
@@ -32,5 +34,5 @@ services:
       - -c
       - |
         rm -rf tmp/pids
-        bundle exec rake db:prepare
+        bundle exec rake db:migrate db:seed
         bundle exec rails server -b 0.0.0.0 -p 3000
