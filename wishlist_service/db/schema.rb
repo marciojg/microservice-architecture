@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_162038) do
   enable_extension "plpgsql"
 
   create_table "items", force: :cascade do |t|
-    t.bigint "wishlist_id"
+    t.bigint "wishlist_id", null: false
     t.bigint "product_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

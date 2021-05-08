@@ -1,0 +1,241 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'wishlist_service'
+
+host: 'localhost:1002'
+
+schemes:
+  - 'http'
+
+definitions:
+  Wishlist:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único.
+      attributes:
+        type: object
+        properties:
+          client_id: &wishlist_client_id
+            description: Id do cliente associado
+            type: integer
+            example: 100
+          created_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+          updated_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+
+  Item:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único.
+      attributes:
+        type: object
+        properties:
+          wishlist_id: &item_wishlist_id
+            description: Id da lista de desejo associada
+            type: integer
+            example: 10
+          product_id: &item_product_id
+            description: Id do produto associado
+            type: integer
+            example: 10
+          created_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+          updated_at:
+            type: string
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
+
+paths:
+  /wishlists:
+    get:
+      tags:
+        - 'Wishlists'
+      summary: Lista de `lista de desejos`
+      description: |
+        Lista as "listas de desejos", com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: q[client_id_eq]
+          type: integer
+          default: 100
+          description: Exemplo de um filtro ransack que filtra as listas de desejos do cliente com id 100
+      responses:
+        200:
+          description: Retorna uma lista de `lista de desejos`
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Wishlist'
+
+    post:
+      tags:
+        - 'Wishlists'
+      summary: Cria uma `lista de desejos`
+      description: Cria uma `lista de desejos` e seus detalhes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              wishlist:
+                type: object
+                properties:
+                  client_id: *wishlist_client_id
+
+      responses:
+        201: &wishlist_post_response
+          description: Retorna a `lista de desejos` criada
+          schema:
+            $ref: '#/definitions/Wishlist'
+
+        204: *wishlist_post_response
+
+  /wishlists/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+
+    get:
+      tags:
+        - 'Wishlists'
+      summary: Exibe uma `lista de desejos`
+      description: Exibe uma `lista de desejos` e seus atributos
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Retorna os detalhes de uma `lista de desejos`
+          schema:
+            $ref: '#/definitions/Wishlist'
+
+    patch: &wishlist_update
+      tags:
+        - 'Wishlists'
+      summary: Altera uma `lista de desejos`
+      description: Altera os dados da `lista de desejos` referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              client_id: *wishlist_client_id
+      responses:
+        200:
+          description: Retorna a `lista de desejos` alterada
+          schema:
+            $ref: '#/definitions/Wishlist'
+
+    put: *wishlist_update
+
+    delete:
+      tags:
+        - 'Wishlists'
+      summary: Deleta uma `lista de desejos`
+      description: Deleta uma `lista de desejos` referente ao seu ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        204:
+          description: No content
+
+
+  /wishlists/{id}/items:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+
+    get:
+      tags:
+        - 'Wishlists'
+        - 'Items'
+      summary:
+        Consulta lista de itens em uma `lista de desejo`
+      description: |
+        Lista os itens em uma `lista de desejo`, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: q[product_id_eq]
+          type: integer
+          default: 10
+          description: Exemplo de um filtro ransack que filtra os itens do produto de id 10
+      responses:
+        200:
+          description: Retorna uma lista de itens
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Item'
+
+    post:
+      tags:
+        - 'Wishlists'
+        - 'Items'
+      summary: Cria um item
+      description: Cria um item e seus detalhes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: layout
+          required: true
+          schema:
+            type: object
+            properties:
+              item:
+                type: object
+                properties:
+                  product_id: *item_product_id
+
+      responses:
+        201: &item_post_response
+          description: Retorna um item criada
+          schema:
+            $ref: '#/definitions/Item'
+
+        204: *item_post_response

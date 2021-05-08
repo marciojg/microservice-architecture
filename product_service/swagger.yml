@@ -37,8 +37,8 @@ definitions:
             example: 123
           created_at:
             type: string
-            format: date
-            example: '2020-05-11'
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
           updated_at:
             type: string
             format: date-time
@@ -59,8 +59,8 @@ definitions:
             example: Masculino Adulto
           created_at:
             type: string
-            format: date
-            example: '2020-05-11'
+            format: date-time
+            example: '2020-01-23 02:09:06 -0300'
           updated_at:
             type: string
             format: date-time
@@ -117,10 +117,13 @@ paths:
           schema:
             type: object
             properties:
-              name: *product_name
-              total_access: *product_total_access
-              value: *product_value
-              category_id: *product_category_id
+              product:
+                type: object
+                properties:
+                  name: *product_name
+                  total_access: *product_total_access
+                  value: *product_value
+                  category_id: *product_category_id
 
       responses:
         201: &product_post_response
@@ -239,7 +242,10 @@ paths:
           schema:
             type: object
             properties:
-              name: *category_name
+              category:
+                type: object
+                properties:
+                  name: *category_name
 
       responses:
         201: &category_post_response
