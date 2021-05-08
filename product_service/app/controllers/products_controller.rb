@@ -6,7 +6,7 @@ class ProductsController < ApplicationController
   # GET /products
   def index
     @search = Product.ransack(params[:q])
-                      
+
     @search.sorts = 'total_access desc' if params[:popular] == 'true'
     @products = @search.result
 
@@ -55,6 +55,6 @@ class ProductsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def product_params
-    params.require(:product).permit(:name, :category_id)
+    params.require(:product).permit(:name, :category_id, :value)
   end
 end

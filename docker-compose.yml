@@ -2,7 +2,7 @@ version: '3'
 
 services:
   product_database:
-    image: postgres # busca imagem do registry
+    image: postgres
     user: "${UID}:${GID}"
     environment:
       - POSTGRES_USER=postgres
@@ -12,6 +12,7 @@ services:
       - ./product_database/data:/var/lib/postgresql/data
     ports:
       - 5432
+
   product_service:
     build:
       context: ./product_service
@@ -27,6 +28,43 @@ services:
       - product_database
     depends_on:
       - product_database
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf tmp/pids
+        bundle exec rake db:migrate db:seed
+        bundle exec rails server -b 0.0.0.0 -p 3000
+
+  wishlist_database:
+    image: postgres
+    user: "${UID}:${GID}"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: unless-stopped
+    volumes:
+      - ./wishlist_database/data:/var/lib/postgresql/data
+    ports:
+      - 5432
+
+  wishlist_service:
+    build:
+      context: ./wishlist_service
+      dockerfile: Dockerfile
+    user: "${UID}:${GID}"
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./wishlist_service:/wishlist_service
+    ports:
+      - 1002:3000
+    links:
+      - wishlist_database
+    depends_on:
+      - wishlist_database
     stdin_open: true
     tty: true
     command:
