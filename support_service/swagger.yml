@@ -58,7 +58,7 @@ definitions:
           updated_at: *ticket_updated_at
 
 paths:
-  /wishlists/open:
+  /tickets/open:
     get:
       tags:
         - 'Open Tickets'
@@ -121,7 +121,7 @@ paths:
 
         204: *ticket_post_response
 
-  /wishlists/closed:
+  /tickets/closed:
     get:
       tags:
         - 'Closed Tickets'
@@ -175,6 +175,15 @@ paths:
 
 
       responses:
+        422:
+          description: Retorna uma mensagem quando não é encontrato um chamado aberto para ser encerrada
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Ticket not found'
+
         201: &ticket_post_response
           description: Retorna uma lista de chamados encerrados
           schema:

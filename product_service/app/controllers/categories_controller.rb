@@ -42,7 +42,7 @@ class CategoriesController < ApplicationController
 
   def products
     @search = @category.products.ransack(params[:q])
-                      
+
     @search.sorts = 'total_access desc' if params[:popular] == 'true'
     @products = @search.result
 
@@ -50,7 +50,7 @@ class CategoriesController < ApplicationController
   end
 
   private
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_category
     @category = Category.find(params[:id])

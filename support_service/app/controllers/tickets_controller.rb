@@ -31,7 +31,7 @@ class TicketsController < ApplicationController
   # POST /tickets/closed
   def close
     if @ticket.blank?
-      return render json: 'Ticket not found', status: :unprocessable_entity
+      return render json: { message: 'Ticket not found' }, status: :unprocessable_entity
     end
 
     if @ticket.close

@@ -6,3 +6,6 @@ wishlist_database/*
 
 support_database/*
 !support_database/.keep
+
+order_database/*
+!order_database/.keep
