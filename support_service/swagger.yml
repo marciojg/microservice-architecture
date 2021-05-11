@@ -48,7 +48,9 @@ definitions:
       attributes:
         type: object
         properties:
-          status: *ticket_status
+          status:
+            description: Status do ticket
+            type: string
             example: closed
           description: *ticket_description
           client_id: *ticket_client_id
@@ -110,7 +112,12 @@ paths:
         201: &ticket_post_response
           description: Retorna uma lista de chamados em aberto
           schema:
-            $ref: '#/definitions/OpenTicket'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/OpenTicket'
 
         204: *ticket_post_response
 
@@ -171,6 +178,11 @@ paths:
         201: &ticket_post_response
           description: Retorna uma lista de chamados encerrados
           schema:
-            $ref: '#/definitions/ClosedTicket'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/ClosedTicket'
 
         204: *ticket_post_response

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class TicketsController < ApplicationController
+  before_action :set_open_ticket, only: [:close]
 
   # GET /tickets/open
   def opened
@@ -29,10 +30,11 @@ class TicketsController < ApplicationController
 
   # POST /tickets/closed
   def close
-    @ticket = Ticket.find(close_ticket_params)
-    @ticket.status = 1
+    if @ticket.blank?
+      return render json: 'Ticket not found', status: :unprocessable_entity
+    end
 
-    if @ticket.save
+    if @ticket.close
       render json: Ticket.closed, status: :created
     else
       render json: @ticket.errors, status: :unprocessable_entity
@@ -40,6 +42,10 @@ class TicketsController < ApplicationController
   end
 
   private
+
+  def set_open_ticket
+    @ticket = Ticket.find_by(close_ticket_params.to_h.merge(status: :open))
+  end
 
   def open_ticket_params
     params.require(:ticket).permit(:description, :client_id)
