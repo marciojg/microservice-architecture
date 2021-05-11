@@ -7,14 +7,14 @@ RUN apt-get update -qq \
     libsqlite3-dev \
  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /product_service
+WORKDIR /support_service
 
-COPY Gemfile* /product_service/
+COPY Gemfile* /support_service/
 
 RUN bundle install
 
-COPY . /product_service
+COPY . /support_service
 
 EXPOSE 3000
 
-CMD [ "bundle", "exec", "rails", "-b", "0.0.0.0", "-p", "3000" ]
+CMD [ "bundle", "exec", "rails", "-p", "3000" ]
