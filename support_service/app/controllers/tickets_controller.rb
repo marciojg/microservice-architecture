@@ -48,7 +48,7 @@ class TicketsController < ApplicationController
   end
 
   def open_ticket_params
-    params.require(:ticket).permit(:description, :client_id)
+    params.require(:ticket).permit(:description, :client_id, :order_id)
   end
 
   def close_ticket_params

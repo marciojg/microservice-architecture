@@ -1,0 +1,212 @@
+openapi: 3.0.1
+info:
+  title: support_service
+  version: 1.0.0
+servers:
+- url: http://localhost:1003/
+paths:
+  /tickets/open:
+    get:
+      tags:
+      - Open Tickets
+      summary: Lista de chamados em aberto
+      description: |
+        Lista os chamados em aberto, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: q[client_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra os chamados em aberto
+          do cliente com id 100
+        schema:
+          type: integer
+          default: 100
+      responses:
+        200:
+          description: Retorna uma lista de chamados em aberto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenTicket'
+    post:
+      tags:
+      - Open Tickets
+      summary: Cria um chamado
+      description: Cria um chamado e seus detalhes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket:
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                      description: Descrição do problema
+                      example: Problema X Y Z
+                    client_id:
+                      type: integer
+                      description: Id do cliente associado
+                      example: 100
+                    order_id:
+                      type: integer
+                      description: Id do pedido associado
+                      example: 123
+        required: true
+      responses:
+        201:
+          description: Retorna uma lista de chamados em aberto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenTicket'
+        204:
+          description: Retorna uma lista de chamados em aberto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenTicket'
+      x-codegen-request-body-name: layout
+  /tickets/closed:
+    get:
+      tags:
+      - Closed Tickets
+      summary: Lista de chamados encerrados
+      description: |
+        Lista os chamados encerrados, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: q[client_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra os chamados encerrados
+          do cliente com id 100
+        schema:
+          type: integer
+          default: 100
+      responses:
+        200:
+          description: Retorna uma lista de chamados encerrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClosedTicket'
+    post:
+      tags:
+      - Closed Tickets
+      summary: Encerra um chamado em aberto
+      description: Encerra um chamado em aberto e seus detalhes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Id do chamado em aberto
+                      example: 10
+        required: true
+      responses:
+        201:
+          description: Retorna uma lista de chamados encerrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClosedTicket'
+        204:
+          description: Retorna uma lista de chamados encerrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClosedTicket'
+        422:
+          description: Retorna uma mensagem quando não é encontrato um chamado aberto
+            para ser encerrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ticket not found
+      x-codegen-request-body-name: layout
+components:
+  schemas:
+    OpenTicket:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status do ticket
+              example: open
+            description:
+              type: string
+              description: Descrição do problema
+              example: Problema X Y Z
+            client_id:
+              type: integer
+              description: Id do cliente associado
+              example: 100
+            order_id:
+              type: integer
+              description: Id do pedido associado
+              example: 123
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    ClosedTicket:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status do ticket
+              example: closed
+            description:
+              type: string
+              description: Descrição do problema
+              example: Problema X Y Z
+            client_id:
+              type: integer
+              description: Id do cliente associado
+              example: 100
+            order_id:
+              type: integer
+              description: Id do pedido associado
+              example: 123
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time

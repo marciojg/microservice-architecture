@@ -1,0 +1,280 @@
+openapi: 3.0.1
+info:
+  title: wishlist_service
+  version: 1.0.0
+servers:
+- url: http://localhost:1002/
+paths:
+  /wishlists:
+    get:
+      tags:
+      - Wishlists
+      summary: Lista de `lista de desejos`
+      description: |
+        Lista as "listas de desejos", com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: q[client_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra as listas de desejos
+          do cliente com id 100
+        schema:
+          type: integer
+          default: 100
+      responses:
+        200:
+          description: Retorna uma lista de `lista de desejos`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wishlist'
+    post:
+      tags:
+      - Wishlists
+      summary: Cria uma `lista de desejos`
+      description: Cria uma `lista de desejos` e seus detalhes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wishlist:
+                  type: object
+                  properties:
+                    client_id:
+                      type: integer
+                      description: Id do cliente associado
+                      example: 100
+        required: true
+      responses:
+        201:
+          description: Retorna a `lista de desejos` criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+        204:
+          description: Retorna a `lista de desejos` criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+      x-codegen-request-body-name: layout
+  /wishlists/{id}:
+    get:
+      tags:
+      - Wishlists
+      summary: Exibe uma `lista de desejos`
+      description: Exibe uma `lista de desejos` e seus atributos
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Retorna os detalhes de uma `lista de desejos`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+    put:
+      tags:
+      - Wishlists
+      summary: Altera uma `lista de desejos`
+      description: Altera os dados da `lista de desejos` referente ao seu ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: integer
+                  description: Id do cliente associado
+                  example: 100
+        required: true
+      responses:
+        200:
+          description: Retorna a `lista de desejos` alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+      x-codegen-request-body-name: layout
+    delete:
+      tags:
+      - Wishlists
+      summary: Deleta uma `lista de desejos`
+      description: Deleta uma `lista de desejos` referente ao seu ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No content
+          content: {}
+    patch:
+      tags:
+      - Wishlists
+      summary: Altera uma `lista de desejos`
+      description: Altera os dados da `lista de desejos` referente ao seu ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: integer
+                  description: Id do cliente associado
+                  example: 100
+        required: true
+      responses:
+        200:
+          description: Retorna a `lista de desejos` alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+      x-codegen-request-body-name: layout
+  /wishlists/{id}/items:
+    get:
+      tags:
+      - Wishlists
+      - Items
+      summary: Consulta lista de itens em uma `lista de desejo`
+      description: |
+        Lista os itens em uma `lista de desejo`, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: q[product_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra os itens do produto de
+          id 10
+        schema:
+          type: integer
+          default: 10
+      responses:
+        200:
+          description: Retorna uma lista de itens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      tags:
+      - Wishlists
+      - Items
+      summary: Cria um item
+      description: Cria um item e seus detalhes.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  type: object
+                  properties:
+                    product_id:
+                      type: integer
+                      description: Id do produto associado
+                      example: 10
+                    amount:
+                      type: integer
+                      description: Quantidade do produto associado
+                      example: 15
+        required: true
+      responses:
+        201:
+          description: Retorna um item criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        204:
+          description: Retorna um item criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+      x-codegen-request-body-name: layout
+components:
+  schemas:
+    Wishlist:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            client_id:
+              type: integer
+              description: Id do cliente associado
+              example: 100
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            wishlist_id:
+              type: integer
+              description: Id da lista de desejo associada
+              example: 10
+            product_id:
+              type: integer
+              description: Id do produto associado
+              example: 10
+            amount:
+              type: integer
+              description: Quantidade do produto associado
+              example: 15
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time

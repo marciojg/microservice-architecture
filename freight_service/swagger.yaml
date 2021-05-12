@@ -1,0 +1,53 @@
+openapi: 3.0.1
+info:
+  title: freight_service
+  version: 1.0.0
+servers:
+- url: http://localhost:1005/
+paths:
+  /freights/calculate:
+    post:
+      tags:
+      - Freights
+      summary: Calcula o valor do frete
+      description: Calcula o valor do frete com base na quantidade de itens e no valor
+        total do pedido.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Freight'
+        required: true
+      responses:
+        200:
+          description: Retorna o frete calculado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  freight_price:
+                    type: number
+                    description: Preço do frete calculado
+                    example: 13.63
+      x-codegen-request-body-name: layout
+components:
+  schemas:
+    Freight:
+      type: object
+      properties:
+        calculate:
+          type: object
+          properties:
+            total_price:
+              type: number
+              description: Preço total do pedido
+              example: 56.6
+            total_items:
+              type: integer
+              description: Total de itens no pedido
+              example: 126
+            zip_code:
+              type: integer
+              description: CEP de entrega
+              example: 12512000

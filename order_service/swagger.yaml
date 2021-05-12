@@ -1,0 +1,233 @@
+openapi: 3.0.1
+info:
+  title: order_service
+  version: 1.0.0
+servers:
+- url: http://localhost:1004/
+paths:
+  /orders/{id}:
+    get:
+      tags:
+      - Open Orders
+      - Closed Orders
+      summary: Exibe um pedido
+      description: Exibe um pedido e seus atributos
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Retorna os detalhes de um pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenOrder'
+  /orders/open:
+    get:
+      tags:
+      - Open Orders
+      summary: Lista de pedidos em aberto
+      description: |
+        Lista os pedidos em aberto, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: q[client_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra os pedidos em aberto
+          do cliente com id 100
+        schema:
+          type: integer
+          default: 100
+      responses:
+        200:
+          description: Retorna uma lista de pedidos em aberto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenOrder'
+    post:
+      tags:
+      - Open Orders
+      summary: Cria um pedido
+      description: Cria um pedido e seus detalhes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: object
+                  properties:
+                    client_id:
+                      type: integer
+                      description: Id do cliente associado
+                      example: 100
+                    item_ids:
+                      type: array
+                      description: Itens associados ao pedido aberto
+                      items:
+                        oneOf:
+                          - type: integer
+                          - type: integer
+        required: true
+      responses:
+        200:
+          description: Retorna o pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenOrder'
+        201:
+          description: Retorna o pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenOrder'
+        204:
+          description: Retorna o pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenOrder'
+      x-codegen-request-body-name: layout
+  /orders/closed:
+    get:
+      tags:
+      - Closed Orders
+      summary: Lista de pedidos encerrados
+      description: |
+        Lista os pedidos encerrados, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: q[client_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra os pedidos encerrados
+          do cliente com id 100
+        schema:
+          type: integer
+          default: 100
+      responses:
+        200:
+          description: Retorna uma lista de pedidos encerrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClosedOrder'
+    post:
+      tags:
+      - Closed Orders
+      summary: Encerra um pedido em aberto
+      description: Encerra um pedido em aberto e seus detalhes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Id do pedido em aberto
+                      example: 10
+        required: true
+      responses:
+        200:
+          description: Retorna o pedido encerrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClosedOrder'
+        201:
+          description: Retorna o pedido encerrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClosedOrder'
+        204:
+          description: Retorna o pedido encerrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClosedOrder'
+        422:
+          description: Retorna uma mensagem quando não é encontrato uma ordem aberta
+            para ser encerrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order not found
+      x-codegen-request-body-name: layout
+components:
+  schemas:
+    OpenOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status do pedido
+              example: open
+            client_id:
+              type: integer
+              description: Id do cliente associado
+              example: 100
+            item_ids:
+              type: array
+              description: Itens associados ao pedido aberto
+              items:
+                oneOf:
+                  - type: integer
+                  - type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    ClosedOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status da ordem
+              example: closed
+            client_id:
+              type: integer
+              description: Id do cliente associado
+              example: 100
+            item_ids:
+              type: array
+              description: Itens associados ao pedido aberto
+              items:
+                oneOf:
+                  - type: integer
+                  - type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time

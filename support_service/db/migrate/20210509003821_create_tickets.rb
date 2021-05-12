@@ -6,6 +6,7 @@ class CreateTickets < ActiveRecord::Migration[6.1]
       t.integer :status, default: 0, null: false
       t.text :description, null: false, limit: 4000
       t.bigint :client_id, null: false
+      t.bigint :order_id, null: false
 
       t.timestamps
     end

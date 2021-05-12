@@ -5,6 +5,7 @@ class CreateItems < ActiveRecord::Migration[6.1]
     create_table :items do |t|
       t.belongs_to :wishlist, null: false, index: true, foreign_key: true
       t.bigint :product_id, null: false
+      t.integer :amount, null: false
 
       t.timestamps
     end
