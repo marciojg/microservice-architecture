@@ -148,3 +148,40 @@ services:
         rm -rf tmp/pids
         bundle exec rake db:migrate db:seed
         rails server -b 0.0.0.0 -p 3000
+
+  freight_database:
+    image: postgres
+    user: "${UID}:${GID}"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: unless-stopped
+    volumes:
+      - ./freight_database/data:/var/lib/postgresql/data
+    ports:
+      - 5432
+
+  freight_service:
+    build:
+      context: ./freight_service
+      dockerfile: Dockerfile
+    user: "${UID}:${GID}"
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./freight_service:/freight_service
+    ports:
+      - 1005:3000
+    links:
+      - freight_database
+    depends_on:
+      - freight_database
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf tmp/pids
+        bundle exec rake db:migrate db:seed
+        rails server -b 0.0.0.0 -p 3000

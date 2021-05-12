@@ -1,0 +1,26 @@
+default: &default
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+sqlite: &sqlite
+  <<: *default
+  adapter: sqlite3
+  database: db/db.sqlite3
+
+postgresql: &postgresql
+  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  host: freight_database
+  database: postgres
+  username: postgres
+  password: postgres
+
+test:
+  <<: *sqlite
+  database: db/test.sqlite3
+
+development:
+  <<: *postgresql
+
+production:
+  <<: *postgresql
