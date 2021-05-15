@@ -1,9 +1,14 @@
 version: '3'
 
+networks:
+  default-net:
+    driver: bridge
+
 services:
   product_database:
     image: postgres
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -17,7 +22,8 @@ services:
     build:
       context: ./product_service
       dockerfile: Dockerfile
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - RAILS_ENV=development
     volumes:
@@ -35,49 +41,13 @@ services:
       - -c
       - |
         rm -rf tmp/pids
-        bundle exec rake db:migrate db:seed
-        rails server -b 0.0.0.0 -p 3000
-
-  wishlist_database:
-    image: postgres
-    user: "${UID}:${GID}"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    restart: unless-stopped
-    volumes:
-      - ./wishlist_database/data:/var/lib/postgresql/data
-    ports:
-      - 5432
-
-  wishlist_service:
-    build:
-      context: ./wishlist_service
-      dockerfile: Dockerfile
-    user: "${UID}:${GID}"
-    environment:
-      - RAILS_ENV=development
-    volumes:
-      - ./wishlist_service:/wishlist_service
-    ports:
-      - 1002:3000
-    links:
-      - wishlist_database
-    depends_on:
-      - wishlist_database
-    stdin_open: true
-    tty: true
-    command:
-      - /bin/sh
-      - -c
-      - |
-        rm -rf tmp/pids
-        bundle exec rake db:migrate db:seed
+        bundle exec rake db:migrate
         rails server -b 0.0.0.0 -p 3000
 
   support_database:
     image: postgres
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -91,7 +61,8 @@ services:
     build:
       context: ./support_service
       dockerfile: Dockerfile
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - RAILS_ENV=development
     volumes:
@@ -114,7 +85,8 @@ services:
 
   order_database:
     image: postgres
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -128,7 +100,8 @@ services:
     build:
       context: ./order_service
       dockerfile: Dockerfile
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - RAILS_ENV=development
     volumes:
@@ -151,7 +124,8 @@ services:
 
   freight_database:
     image: postgres
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -165,7 +139,8 @@ services:
     build:
       context: ./freight_service
       dockerfile: Dockerfile
-    user: "${UID}:${GID}"
+    networks:
+      - default-net
     environment:
       - RAILS_ENV=development
     volumes:

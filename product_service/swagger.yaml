@@ -55,10 +55,6 @@ paths:
                       type: string
                       description: Nome do produto
                       example: Camisa Azul
-                    total_access:
-                      type: integer
-                      description: Total de acessos recebidos
-                      example: 7
                     value:
                       type: number
                       description: Valor do produto
@@ -125,10 +121,6 @@ paths:
                   type: string
                   description: Nome do produto
                   example: Camisa Azul
-                total_access:
-                  type: integer
-                  description: Total de acessos recebidos
-                  example: 7
                 value:
                   type: number
                   description: Valor do produto
@@ -183,10 +175,6 @@ paths:
                   type: string
                   description: Nome do produto
                   example: Camisa Azul
-                total_access:
-                  type: integer
-                  description: Total de acessos recebidos
-                  example: 7
                 value:
                   type: number
                   description: Valor do produto

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Product < ApplicationRecord
+  after_create { produce_message('CREATED') }
+  after_destroy { produce_message('DESTROYED') }
+
   belongs_to :category
 
   validates :name, presence: true,
@@ -11,5 +14,11 @@ class Product < ApplicationRecord
   def new_access!
     self.total_access += 1
     self.save!
+  end
+
+  private
+
+  def produce_message(key)
+    KafkaConnector.produce(self.id, key: key, topic: self.class.table_name)
   end
 end

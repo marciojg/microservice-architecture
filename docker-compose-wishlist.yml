@@ -1,0 +1,81 @@
+version: '3'
+
+volumes:
+  wishlist_redis_volume:
+
+networks:
+  default-net:
+    driver: bridge
+
+services:
+  wishlist_database:
+    image: postgres
+    networks:
+      - default-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: unless-stopped
+    volumes:
+      - ./wishlist_database/data:/var/lib/postgresql/data
+    ports:
+      - 5432
+
+  wishlist_service:
+    build:
+      context: ./wishlist_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./wishlist_service:/wishlist_service
+    ports:
+      - 1002:3000
+    links:
+      - wishlist_database
+      - wishlist_redis
+      - wishlist_consumer
+    depends_on:
+      - wishlist_database
+      - wishlist_redis
+      - wishlist_consumer
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf tmp/pids
+        bundle exec rake db:migrate db:seed
+        rails server -b 0.0.0.0 -p 3000
+
+  wishlist_consumer:
+    build:
+      context: ./wishlist_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    links:
+      - wishlist_redis
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./wishlist_service:/wishlist_service
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec racecar ProductsConsumer
+
+  wishlist_redis:
+    image: redis:latest
+    ports:
+      - 6379
+    networks:
+      - default-net
+    volumes:
+      - wishlist_redis_volume:/usr/local/etc/redis
