@@ -10,7 +10,7 @@ class ProductsConsumer < Racecar::Consumer
   end
 
   def process(message)
-    type, id = message.key, message.value
+    type, id = message.key, JSON.parse(message.value)
     products ||= @cache.read(CACHE_NAME) || []
 
     case type

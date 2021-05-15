@@ -213,10 +213,6 @@ paths:
                       type: integer
                       description: Id do produto associado
                       example: 10
-                    amount:
-                      type: integer
-                      description: Quantidade do produto associado
-                      example: 15
         required: true
       responses:
         201:
@@ -270,10 +266,10 @@ components:
               type: integer
               description: Id do produto associado
               example: 10
-            amount:
-              type: integer
-              description: Quantidade do produto associado
-              example: 15
+            value:
+              type: decimal
+              description: Valor do item associado
+              example: 15.45
             created_at:
               type: string
               format: date-time

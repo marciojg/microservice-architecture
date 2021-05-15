@@ -63,7 +63,7 @@ paths:
                     category_id:
                       type: integer
                       description: Id da categoria associada
-                      example: 123
+                      example: 1
         required: true
       responses:
         201:
@@ -129,7 +129,7 @@ paths:
                 category_id:
                   type: integer
                   description: Id da categoria associada
-                  example: 123
+                  example: 1
         required: true
       responses:
         200:
@@ -183,7 +183,7 @@ paths:
                 category_id:
                   type: integer
                   description: Id da categoria associada
-                  example: 123
+                  example: 1
         required: true
       responses:
         200:
@@ -408,7 +408,7 @@ components:
             category_id:
               type: integer
               description: Id da categoria associada
-              example: 123
+              example: 1
             created_at:
               type: string
               format: date-time

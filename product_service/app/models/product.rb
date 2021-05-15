@@ -19,6 +19,6 @@ class Product < ApplicationRecord
   private
 
   def produce_message(key)
-    KafkaConnector.produce(self.id, key: key, topic: self.class.table_name)
+    KafkaConnector.produce({ id: self.id, value: self.value }.to_json, key: key, topic: self.class.table_name)
   end
 end

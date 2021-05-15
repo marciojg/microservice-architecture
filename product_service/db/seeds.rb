@@ -6,15 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Product.delete_all
 Category.delete_all
 
-category_1 = Category.create(name: 'infantil');
-category_2 = Category.create(name: 'adulto');
-
-Product.create([
-    { name: 'Camisa Azul',     value: 10.50, category: category_1 },
-    { name: 'Camisa Vermelha', value: 11.90, category: category_1 },
-    { name: 'Camisa Verde',    value: 9.30, category: category_1 },
-    { name: 'Bermuda Verde',   value: 15.20, category: category_2 }
-])
+Category.create(name: 'masculino');
+Category.create(name: 'feminino');

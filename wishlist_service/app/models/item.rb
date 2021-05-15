@@ -3,13 +3,17 @@
 class Item < ApplicationRecord
   include Products
 
-  belongs_to :wishlist
+  before_validation do
+    return if product_id.blank?
 
-  with_options numericality: { only_integer: true, greater_than: 0 } do
-    validates :product_id, uniqueness: { scope: :wishlist }
-    validates :amount
+    self.value = product_value(product_id)
   end
 
-  validates :product_id, inclusion: { in: :valid_product_ids,
-  message: "%{value} is not a valid" }
+  belongs_to :wishlist
+
+  validates :product_id, numericality: { only_integer: true, greater_than: 0 },
+                         uniqueness: { scope: :wishlist },
+                         inclusion: { in: :valid_product_ids, message: "%{value} is not a valid" }
+
+  validates :value, numericality: { greater_than_or_equal_to: 0 }
 end

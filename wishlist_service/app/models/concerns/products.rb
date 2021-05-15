@@ -5,7 +5,13 @@ module Products
 
   included do
     def valid_product_ids
-      @product_list ||= product_list.map(&:to_i)
+      @product_list ||= product_list.map { |prod| prod['id'].to_i }
+    end
+
+    def product_value(id)
+      value = product_list.find { |prod| prod['id'].to_i == id }&.fetch('value')
+
+      @produc_value ||= value.to_f
     end
 
     private
