@@ -4,10 +4,8 @@ module Products
   extend ActiveSupport::Concern
 
   included do
-    attribute :product_ids, :integer, array: true
-
-    def product_ids
-      product_list.map(&:to_i)
+    def valid_product_ids
+      @product_list ||= product_list.map(&:to_i)
     end
 
     private

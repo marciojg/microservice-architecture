@@ -9,4 +9,7 @@ class Item < ApplicationRecord
     validates :product_id, uniqueness: { scope: :wishlist }
     validates :amount
   end
+
+  validates :product_id, inclusion: { in: :valid_product_ids,
+  message: "%{value} is not a valid" }
 end

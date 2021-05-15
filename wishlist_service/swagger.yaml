@@ -14,12 +14,14 @@ paths:
         Lista as "listas de desejos", com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
       parameters:
       - name: q[client_id_eq]
+        required: false
         in: query
         description: Exemplo de um filtro ransack que filtra as listas de desejos
           do cliente com id 100
         schema:
           type: integer
-          default: 100
+          minimum: 1
+          maximum: 100
       responses:
         200:
           description: Retorna uma lista de `lista de desejos`
