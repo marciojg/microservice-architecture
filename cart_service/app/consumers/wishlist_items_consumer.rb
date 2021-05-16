@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class ProductsConsumer < Racecar::Consumer
-  CACHE_NAME = 'Products#cache'.freeze
+class WishlistItemsConsumer < Racecar::Consumer
+  CACHE_NAME = 'WishlistItems#cache'.freeze
 
-  subscribes_to 'PRODUCTS'
+  subscribes_to 'WISHLIST_ITEMS'
 
   def initialize
     @cache = Rails.cache
@@ -11,14 +11,14 @@ class ProductsConsumer < Racecar::Consumer
 
   def process(message)
     type, obj = message.key, JSON.parse(message.value)
-    products ||= @cache.read(CACHE_NAME) || []
+    wishlist_items ||= @cache.read(CACHE_NAME) || []
 
     case type
     when 'CREATED'
-      @cache.write(CACHE_NAME, products.push(obj))
+      @cache.write(CACHE_NAME, wishlist_items.push(obj))
     when 'DESTROYED'
-      products.delete(obj)
-      @cache.write(CACHE_NAME, products)
+      wishlist_items.delete(obj)
+      @cache.write(CACHE_NAME, wishlist_items)
     else
       Rails.log.error("Type not found #{type}")
     end

@@ -178,7 +178,7 @@ paths:
           id 10
         schema:
           type: integer
-          default: 10
+          minimum: 1
       responses:
         200:
           description: Retorna uma lista de itens
@@ -267,7 +267,7 @@ components:
               description: Id do produto associado
               example: 10
             value:
-              type: decimal
+              type: number
               description: Valor do item associado
               example: 15.45
             created_at:

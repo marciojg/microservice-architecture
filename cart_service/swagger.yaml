@@ -1,0 +1,255 @@
+openapi: 3.0.1
+info:
+  title: cart_service
+  version: 1.0.0
+servers:
+- url: http://localhost:1006/
+paths:
+  /carts/{cart_client_id}/items:
+    get:
+      tags:
+      - Items
+      summary: Lista de Itens em um Carrinho
+      description: |
+        Lista os Itens em um Carrinho, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: q[product_id_eq]
+        required: false
+        in: query
+        description: Exemplo de um filtro ransack que filtra os itens no carrinho com id do produto igual a 100
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        200:
+          description: Retorna uma lista de Itens em um Carrinho
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      tags:
+      - Items
+      summary: Cria um item em um Carrinho diretamente
+      description: Cria um item em um Carrinho e seus detalhes.
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  type: object
+                  properties:
+                    product_id:
+                      type: integer
+                      description: Id do produto associado
+                      example: 11
+                    wishlist_item_id:
+                      type: number
+                      description: Id do item na lista de desejo
+                      example: 12
+                    amount:
+                      type: number
+                      description: Quantidade do produto associado
+                      example: 3
+        required: true
+      responses:
+        201:
+          description: Retorna um item em um Carrinho criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        204:
+          description: Retorna um item em um Carrinho criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        402:
+          description: Retorna um erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product_id:
+                    type: array
+                    items:
+                      type: string
+                      description: Erro de validação
+                      example: 0 is not a valid
+                  wishlist_item_id:
+                    type: array
+                    items:
+                      type: string
+                      description: Erro de validação
+                      example: 12 is not a valid
+
+      x-codegen-request-body-name: layout
+
+  /carts/{cart_client_id}/items/{id}:
+    get:
+      tags:
+      - Items
+      summary: Exibe um Item em um carrinho
+      description: Exibe um Item em um carrinho e seus atributos
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Retorna os detalhes de um Item em um carrinho
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    put:
+      tags:
+      - Items
+      summary: Altera um Item em um carrinho
+      description: Altera os dados de um Item em um carrinho referente ao seu ID
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Quantidade do produto associado
+                  example: 3
+        required: true
+      responses:
+        200:
+          description: Retorna um Item em um carrinho alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+      x-codegen-request-body-name: layout
+    delete:
+      tags:
+      - Items
+      summary: Deleta um Item em um carrinho
+      description: Deleta um Item em um carrinho referente ao seu ID
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No content
+          content: {}
+    patch:
+      tags:
+      - Items
+      summary: Altera um Item em um carrinho
+      description: Altera os dados de um Item em um carrinho referente ao seu ID
+      parameters:
+      - name: cart_client_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Quantidade do produto associado
+                  example: 3
+        required: true
+      responses:
+        200:
+          description: Retorna um Item em um carrinho alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+      x-codegen-request-body-name: layout
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único.
+        attributes:
+          type: object
+          properties:
+            cart_client_id:
+              type: integer
+              description: Id da lista de desejo associada
+              example: 10
+            product_id:
+              type: integer
+              description: Id do produto associado
+              example: 11
+            wishlist_item_id:
+              type: number
+              description: Id do item na lista de desejo
+              example: 12
+            value:
+              type: number
+              description: Valor do item associado
+              example: 15.45
+            amount:
+              type: number
+              description: Quantidade do produto associado
+              example: 3
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time

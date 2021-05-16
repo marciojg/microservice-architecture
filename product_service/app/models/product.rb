@@ -19,6 +19,6 @@ class Product < ApplicationRecord
   private
 
   def produce_message(key)
-    DeliveryBoy.deliver({ id: self.id, value: self.value }.to_json, key: key, topic: self.class.table_name)
+    DeliveryBoy.deliver({ id: self.id, value: self.value }.to_json, key: key, topic: 'PRODUCTS')
   end
 end

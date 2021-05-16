@@ -1,8 +1,8 @@
 # https://github.com/zendesk/racecar#configuration
 # Design Pattern Circuit Breaker implementado por default pelo Framework Racecar
 Racecar.configure do |config|
-  config.client_id = 'WISHLIST_SERVICE'
-  config.group_id_prefix = 'WISHLIST_SERVICE'
+  config.client_id = 'CART_SERVICE'
+  config.group_id_prefix = 'CART_SERVICE'
   config.brokers = ['kafka:29092']
 
   # How long to pause a partition for if the consumer raises an exception while processing a message.

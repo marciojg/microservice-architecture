@@ -11,7 +11,7 @@ module Products
     def product_value(id)
       value = product_list.find { |prod| prod['id'].to_i == id }&.fetch('value')
 
-      @produc_value ||= value.to_f
+      @product_value ||= value.to_f
     end
 
     private

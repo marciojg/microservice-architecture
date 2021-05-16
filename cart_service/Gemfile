@@ -34,6 +34,7 @@ gem 'rswag-ui'
 gem 'racecar'
 gem 'delivery_boy'
 
+
 # Redis
 gem 'redis'
 gem 'hiredis'
