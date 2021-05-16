@@ -31,7 +31,7 @@ gem 'rswag-api'
 gem 'rswag-ui'
 
 # Kafka
-gem 'ruby-kafka'
+gem 'delivery_boy'
 
 group :development, :test do
   gem 'factory_bot_rails'
