@@ -35,6 +35,6 @@ class Item < ApplicationRecord
   def produce_message_to_remove_wishlist_item
     obj = { wishlist_item_id: self.wishlist_item_id }.to_json
 
-    DeliveryBoy.deliver(obj, key: self.cart_client_id, topic: 'DELETE_WISHLIST_ITEM')
+    DeliveryBoy.deliver(obj, key: self.cart_client_id, topic: 'DELETE_WISHLIST_ITEM_CHANNEL')
   end
 end

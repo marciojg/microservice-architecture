@@ -23,6 +23,6 @@ class Item < ApplicationRecord
   def produce_message(key)
     obj = { id: self.id, product_id: self.product_id, value: self.value }.to_json
 
-    DeliveryBoy.deliver(obj, key: key, topic: 'WISHLIST_ITEMS')
+    DeliveryBoy.deliver(obj, key: key, topic: 'WISHLIST_ITEMS_CHANNEL')
   end
 end

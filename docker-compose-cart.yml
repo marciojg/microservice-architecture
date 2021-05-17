@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  wishlist_redis_volume:
+  cart_redis_volume:
 
 networks:
   default-net:
@@ -9,7 +9,7 @@ networks:
     external: true
 
 services:
-  wishlist_database:
+  cart_database:
     image: postgres
     networks:
       - default-net
@@ -18,32 +18,32 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     volumes:
-      - ./wishlist_database/data:/var/lib/postgresql/data
+      - ./cart_database/data:/var/lib/postgresql/data
     ports:
       - 5432
 
-  wishlist_service:
+  cart_service:
     build:
-      context: ./wishlist_service
+      context: ./cart_service
       dockerfile: Dockerfile
     networks:
       - default-net
     environment:
       - RAILS_ENV=development
     volumes:
-      - ./wishlist_service:/wishlist_service
+      - ./cart_service:/cart_service
     ports:
-      - 1002:3000
+      - 1006:3000
     links:
-      - wishlist_database
-      - wishlist_redis
-      - wishlist_consumer1
-      - wishlist_consumer2
+      - cart_database
+      - cart_redis
+      - cart_consumer1
+      - cart_consumer2
     depends_on:
-      - wishlist_database
-      - wishlist_redis
-      - wishlist_consumer1
-      - wishlist_consumer2
+      - cart_database
+      - cart_redis
+      - cart_consumer1
+      - cart_consumer2
     stdin_open: true
     tty: true
     command:
@@ -51,21 +51,21 @@ services:
       - -c
       - |
         rm -rf tmp/pids
-        bundle exec rake db:migrate db:seed
+        bundle exec rake db:migrate
         rails server -b 0.0.0.0 -p 3000
 
-  wishlist_consumer1:
+  cart_consumer1:
     build:
-      context: ./wishlist_service
+      context: ./cart_service
       dockerfile: Dockerfile
     networks:
       - default-net
     links:
-      - wishlist_redis
+      - cart_redis
     environment:
       - RAILS_ENV=development
     volumes:
-      - ./wishlist_service:/wishlist_service
+      - ./cart_service:/cart_service
     stdin_open: true
     tty: true
     command:
@@ -74,31 +74,31 @@ services:
       - |
         bundle exec racecar ProductsConsumer
 
-  wishlist_consumer2:
+  cart_consumer2:
     build:
-      context: ./wishlist_service
+      context: ./cart_service
       dockerfile: Dockerfile
     networks:
       - default-net
     links:
-      - wishlist_redis
+      - cart_redis
     environment:
       - RAILS_ENV=development
     volumes:
-      - ./wishlist_service:/wishlist_service
+      - ./cart_service:/cart_service
     stdin_open: true
     tty: true
     command:
       - /bin/sh
       - -c
       - |
-        bundle exec racecar ItemsDeleteConsumer
+        bundle exec racecar WishlistItemsConsumer
 
-  wishlist_redis:
+  cart_redis:
     image: redis:latest
     ports:
       - 6379
     networks:
       - default-net
     volumes:
-      - wishlist_redis_volume:/usr/local/etc/redis
+      - cart_redis_volume:/usr/local/etc/redis

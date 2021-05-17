@@ -3,6 +3,7 @@ version: '3'
 networks:
   default-net:
     driver: bridge
+    external: true
 
 # https://github.com/confluentinc/cp-all-in-one/blob/6.1.1-post/cp-all-in-one-community/docker-compose.yml
 services:

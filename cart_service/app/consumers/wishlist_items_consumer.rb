@@ -3,7 +3,7 @@
 class WishlistItemsConsumer < Racecar::Consumer
   CACHE_NAME = 'WishlistItems#cache'.freeze
 
-  subscribes_to 'WISHLIST_ITEMS'
+  subscribes_to 'WISHLIST_ITEMS_CHANNEL'
 
   def initialize
     @cache = Rails.cache

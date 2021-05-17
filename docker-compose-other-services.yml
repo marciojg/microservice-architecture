@@ -3,6 +3,7 @@ version: '3'
 networks:
   default-net:
     driver: bridge
+    external: true
 
 services:
   product_database:
