@@ -14,4 +14,7 @@ echo 'stop other-services stack'
 docker-compose -f docker-compose-other-services.yml down
 sleep 10
 
+echo 'remove network'
+docker network rm default-net
+
 echo "Success!"

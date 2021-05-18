@@ -30,6 +30,15 @@ gem 'ransack'
 gem 'rswag-api'
 gem 'rswag-ui'
 
+# Kafka
+gem 'racecar'
+gem 'delivery_boy'
+
+
+# Redis
+gem 'redis'
+gem 'hiredis'
+
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'sqlite3'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ItemsDeleteConsumer < Racecar::Consumer
-  subscribes_to 'DELETE_WISHLIST_ITEM_CHANNEL'
+  subscribes_to 'DELETE_WISHLIST_ITEM_CHANNEL', start_from_beginning: true
 
   def process(message)
     client_id, obj = message.key, JSON.parse(message.value)

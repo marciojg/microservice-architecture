@@ -84,45 +84,6 @@ services:
         bundle exec rake db:migrate db:seed
         rails server -b 0.0.0.0 -p 3000
 
-  order_database:
-    image: postgres
-    networks:
-      - default-net
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    restart: unless-stopped
-    volumes:
-      - ./order_database/data:/var/lib/postgresql/data
-    ports:
-      - 5432
-
-  order_service:
-    build:
-      context: ./order_service
-      dockerfile: Dockerfile
-    networks:
-      - default-net
-    environment:
-      - RAILS_ENV=development
-    volumes:
-      - ./order_service:/order_service
-    ports:
-      - 1004:3000
-    links:
-      - order_database
-    depends_on:
-      - order_database
-    stdin_open: true
-    tty: true
-    command:
-      - /bin/sh
-      - -c
-      - |
-        rm -rf tmp/pids
-        bundle exec rake db:migrate db:seed
-        rails server -b 0.0.0.0 -p 3000
-
   freight_database:
     image: postgres
     networks:

@@ -33,7 +33,7 @@ paths:
       description: |
         Lista os pedidos em aberto, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
       parameters:
-      - name: q[client_id_eq]
+      - name: q[cart_client_id_eq]
         in: query
         description: Exemplo de um filtro ransack que filtra os pedidos em aberto
           do cliente com id 100
@@ -63,17 +63,10 @@ paths:
                 order:
                   type: object
                   properties:
-                    client_id:
+                    cart_client_id:
                       type: integer
                       description: Id do cliente associado
                       example: 100
-                    item_ids:
-                      type: array
-                      description: Itens associados ao pedido aberto
-                      items:
-                        oneOf:
-                          - type: integer
-                          - type: integer
         required: true
       responses:
         200:
@@ -103,7 +96,7 @@ paths:
       description: |
         Lista os pedidos encerrados, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)
       parameters:
-      - name: q[client_id_eq]
+      - name: q[cart_client_id_eq]
         in: query
         description: Exemplo de um filtro ransack que filtra os pedidos encerrados
           do cliente com id 100
@@ -184,17 +177,10 @@ components:
               type: string
               description: Status do pedido
               example: open
-            client_id:
+            cart_client_id:
               type: integer
               description: Id do cliente associado
               example: 100
-            item_ids:
-              type: array
-              description: Itens associados ao pedido aberto
-              items:
-                oneOf:
-                  - type: integer
-                  - type: integer
             created_at:
               type: string
               format: date-time
@@ -214,17 +200,10 @@ components:
               type: string
               description: Status da ordem
               example: closed
-            client_id:
+            cart_client_id:
               type: integer
               description: Id do cliente associado
               example: 100
-            item_ids:
-              type: array
-              description: Itens associados ao pedido aberto
-              items:
-                oneOf:
-                  - type: integer
-                  - type: integer
             created_at:
               type: string
               format: date-time

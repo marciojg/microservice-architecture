@@ -1,0 +1,82 @@
+version: '3'
+
+volumes:
+  order_redis_volume:
+
+networks:
+  default-net:
+    driver: bridge
+    external: true
+
+services:
+  order_database:
+    image: postgres
+    networks:
+      - default-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: unless-stopped
+    volumes:
+      - ./order_database/data:/var/lib/postgresql/data
+    ports:
+      - 5432
+
+  order_service:
+    build:
+      context: ./order_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./order_service:/order_service
+    ports:
+      - 1004:3000
+    links:
+      - order_database
+      - order_redis
+      - order_consumer
+    depends_on:
+      - order_database
+      - order_redis
+      - order_consumer
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf tmp/pids
+        bundle exec rake db:migrate db:seed
+        rails server -b 0.0.0.0 -p 3000
+
+  order_consumer:
+    build:
+      context: ./order_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    links:
+      - order_redis
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./order_service:/order_service
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec racecar CartsConsumer
+
+  order_redis:
+    image: redis:latest
+    ports:
+      - 6379
+    networks:
+      - default-net
+    volumes:
+      - order_redis_volume:/usr/local/etc/redis

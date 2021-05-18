@@ -55,7 +55,7 @@ class OrdersController < ApplicationController
   end
 
   def open_order_params
-    params.require(:order).permit(:client_id, item_ids: [])
+    params.require(:order).permit(:cart_client_id)
   end
 
   def close_order_params

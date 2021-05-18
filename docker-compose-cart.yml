@@ -39,11 +39,13 @@ services:
       - cart_redis
       - cart_consumer1
       - cart_consumer2
+      - cart_consumer3
     depends_on:
       - cart_database
       - cart_redis
       - cart_consumer1
       - cart_consumer2
+      - cart_consumer3
     stdin_open: true
     tty: true
     command:
@@ -93,6 +95,24 @@ services:
       - -c
       - |
         bundle exec racecar WishlistItemsConsumer
+
+  cart_consumer3:
+    build:
+      context: ./cart_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./cart_service:/cart_service
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec racecar CartItemsConsumer
 
   cart_redis:
     image: redis:latest

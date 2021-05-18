@@ -1,3 +1,6 @@
+echo 'creating network'
+docker network create default-net
+
 echo 'creating kafka stack'
 docker-compose -f docker-compose-kafka.yml up -d
 sleep 10

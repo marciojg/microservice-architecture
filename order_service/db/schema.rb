@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(version: 2021_05_09_003821) do
 
   create_table "orders", force: :cascade do |t|
     t.integer "status", default: 0, null: false
-    t.bigint "client_id", null: false
-    t.bigint "item_ids", default: [], array: true
+    t.bigint "cart_client_id", null: false
+    t.decimal "freight_value", precision: 32, scale: 8
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -3,7 +3,7 @@
 class ProductsConsumer < Racecar::Consumer
   CACHE_NAME = 'Products#cache'.freeze
 
-  subscribes_to 'PRODUCTS_CHANNEL'
+  subscribes_to 'PRODUCTS_CHANNEL', start_from_beginning: true
 
   def initialize
     @cache = Rails.cache
