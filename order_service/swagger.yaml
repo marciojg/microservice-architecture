@@ -39,7 +39,7 @@ paths:
           do cliente com id 100
         schema:
           type: integer
-          default: 100
+          minimum: 1
       responses:
         200:
           description: Retorna uma lista de pedidos em aberto
@@ -66,7 +66,7 @@ paths:
                     cart_client_id:
                       type: integer
                       description: Id do cliente associado
-                      example: 100
+                      minimum: 1
         required: true
       responses:
         200:
@@ -102,7 +102,7 @@ paths:
           do cliente com id 100
         schema:
           type: integer
-          default: 100
+          minimum: 1
       responses:
         200:
           description: Retorna uma lista de pedidos encerrados

@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  order_redis_volume:
+  support_redis_volume:
 
 networks:
   default-net:
@@ -9,7 +9,7 @@ networks:
     external: true
 
 services:
-  order_database:
+  support_database:
     image: postgres
     networks:
       - default-net
@@ -18,32 +18,28 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     volumes:
-      - ./order_database/data:/var/lib/postgresql/data
+      - ./support_database/data:/var/lib/postgresql/data
     ports:
       - 5432
 
-  order_service:
+  support_service:
     build:
-      context: ./order_service
+      context: ./support_service
       dockerfile: Dockerfile
     networks:
       - default-net
     environment:
       - RAILS_ENV=development
     volumes:
-      - ./order_service:/order_service
+      - ./support_service:/support_service
     ports:
-      - 1004:3000
+      - 1003:3000
     links:
-      - order_database
-      - order_redis
-      - order_consumer1
-      - order_consumer2
+      - support_database
+      - support_consumer
     depends_on:
-      - order_database
-      - order_redis
-      - order_consumer1
-      - order_consumer2
+      - support_database
+      - support_consumer
     stdin_open: true
     tty: true
     command:
@@ -54,51 +50,31 @@ services:
         bundle exec rake db:migrate db:seed
         rails server -b 0.0.0.0 -p 3000
 
-  order_consumer1:
+  support_consumer:
     build:
-      context: ./order_service
+      context: ./support_service
       dockerfile: Dockerfile
     networks:
       - default-net
     links:
-      - order_redis
+      - support_redis
     environment:
       - RAILS_ENV=development
     volumes:
-      - ./order_service:/order_service
+      - ./support_service:/support_service
     stdin_open: true
     tty: true
     command:
       - /bin/sh
       - -c
       - |
-        bundle exec racecar CartsConsumer
+        bundle exec racecar OrdersConsumer
 
-  order_consumer2:
-    build:
-      context: ./order_service
-      dockerfile: Dockerfile
-    networks:
-      - default-net
-    links:
-      - order_redis
-    environment:
-      - RAILS_ENV=development
-    volumes:
-      - ./order_service:/order_service
-    stdin_open: true
-    tty: true
-    command:
-      - /bin/sh
-      - -c
-      - |
-        bundle exec racecar TotalItemsReplyConsumer
-
-  order_redis:
+  support_redis:
     image: redis:latest
     ports:
       - 6379
     networks:
       - default-net
     volumes:
-      - order_redis_volume:/usr/local/etc/redis
+      - support_redis_volume:/usr/local/etc/redis

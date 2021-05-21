@@ -1,18 +1,22 @@
-echo 'stop kafka stack'
-docker-compose -f docker-compose-kafka.yml down
-sleep 10
+echo 'down product stack'
+docker-compose -f docker-compose-product.yml down
+sleep 5
 
-echo 'stop wishlist stack'
+echo 'down wishlist stack'
 docker-compose -f docker-compose-wishlist.yml down
-sleep 10
+sleep 5
 
-echo 'stop cart stack'
+echo 'down cart stack'
 docker-compose -f docker-compose-cart.yml down
-sleep 10
+sleep 5
 
-echo 'stop other-services stack'
-docker-compose -f docker-compose-other-services.yml down
-sleep 10
+echo 'down support stack'
+docker-compose -f docker-compose-support.yml down
+sleep 5
+
+echo 'down freight stack'
+docker-compose -f docker-compose-freight.yml down
+sleep 5
 
 echo 'remove network'
 docker network rm default-net

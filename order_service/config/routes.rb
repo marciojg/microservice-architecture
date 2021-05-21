@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
 
-  resources :orders, param: :client_id, only: [:show] do
-    member do
+  resources :orders, param: :id, only: [:show] do
+    collection do
       get :open, to: 'orders#opened'
       get :closed, to: 'orders#closed'
       post :open, to: 'orders#open'

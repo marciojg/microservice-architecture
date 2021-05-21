@@ -40,12 +40,14 @@ services:
       - cart_consumer1
       - cart_consumer2
       - cart_consumer3
+      - cart_consumer4
     depends_on:
       - cart_database
       - cart_redis
       - cart_consumer1
       - cart_consumer2
       - cart_consumer3
+      - cart_consumer4
     stdin_open: true
     tty: true
     command:
@@ -112,7 +114,25 @@ services:
       - /bin/sh
       - -c
       - |
-        bundle exec racecar CartItemsConsumer
+        bundle exec racecar CartItemsRemoveConsumer
+
+  cart_consumer4:
+    build:
+      context: ./cart_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./cart_service:/cart_service
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec racecar TotalItemsConsumer
 
   cart_redis:
     image: redis:latest

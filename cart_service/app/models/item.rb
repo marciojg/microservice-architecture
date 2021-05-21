@@ -30,6 +30,14 @@ class Item < ApplicationRecord
                            inclusion: { in: :valid_product_ids, message: "%{value} is not a valid" }
   end
 
+  def self.total_amount
+    sum(:amount)
+  end
+
+  def self.total_value
+    sum(:value)
+  end
+
   private
 
   def produce_message_to_remove_wishlist_item
