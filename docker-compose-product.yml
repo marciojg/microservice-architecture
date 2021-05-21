@@ -1,5 +1,8 @@
 version: '3'
 
+volumes:
+  product_database_volume:
+
 networks:
   default-net:
     driver: bridge
@@ -15,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     volumes:
-      - ./product_database/data:/var/lib/postgresql/data
+      - product_database_volume:/var/lib/postgresql/data
     ports:
       - 5432
 

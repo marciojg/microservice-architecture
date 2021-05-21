@@ -1,6 +1,7 @@
 version: '3'
 
 volumes:
+  freight_database_volume:
   freight_redis_volume:
 
 networks:
@@ -18,7 +19,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     volumes:
-      - ./freight_database/data:/var/lib/postgresql/data
+      - freight_database_volume:/var/lib/postgresql/data
     ports:
       - 5432
 

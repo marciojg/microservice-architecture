@@ -1,6 +1,7 @@
 version: '3'
 
 volumes:
+  cart_database_volume:
   cart_redis_volume:
 
 networks:
@@ -18,7 +19,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     restart: unless-stopped
     volumes:
-      - ./cart_database/data:/var/lib/postgresql/data
+      - cart_database_volume:/var/lib/postgresql/data
     ports:
       - 5432
 
