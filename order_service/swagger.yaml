@@ -25,6 +25,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenOrder'
+  /orders/{id}/freight:
+    post:
+      tags:
+      - Frete
+      summary: Solicita o cálculo do frete
+      description: Solicita o cálculo do frete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                freight:
+                  type: object
+                  properties:
+                    zip_code:
+                      type: string
+                      description: CEP do cliente para cálculo
+                      example: '02512000'
+        required: true
+      responses:
+        200:
+          description: Retorna um OK da solicitação de cálculo
+        422:
+          description: Retorna um erro
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Mensagem de erro
+                    example: zip code error
+      x-codegen-request-body-name: layout
   /orders/open:
     get:
       tags:

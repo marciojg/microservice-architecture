@@ -39,11 +39,13 @@ services:
       - order_redis
       - order_consumer1
       - order_consumer2
+      - order_consumer3
     depends_on:
       - order_database
       - order_redis
       - order_consumer1
       - order_consumer2
+      - order_consumer3
     stdin_open: true
     tty: true
     command:
@@ -80,8 +82,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - default-net
-    links:
-      - order_redis
     environment:
       - RAILS_ENV=development
     volumes:
@@ -93,6 +93,24 @@ services:
       - -c
       - |
         bundle exec racecar TotalItemsReplyConsumer
+
+  order_consumer3:
+    build:
+      context: ./order_service
+      dockerfile: Dockerfile
+    networks:
+      - default-net
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./order_service:/order_service
+    stdin_open: true
+    tty: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        bundle exec racecar CalculateFreightReplyConsumer
 
   order_redis:
     image: redis:latest

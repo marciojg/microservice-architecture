@@ -5,7 +5,7 @@ class FreightsController < ApplicationController
     @freight = Freight.new(calculate_params)
 
     if @freight.valid?
-      render json: { freight_price: @freight.calculate }
+      render json: { freight_value: @freight.calculate }
     else
       render json: @freight.errors, status: :unprocessable_entity
     end
@@ -14,6 +14,6 @@ class FreightsController < ApplicationController
   private
 
   def calculate_params
-    params.require(:calculate).permit(:total_price, :total_items, :zip_code)
+    params.require(:calculate).permit(:client_id, :total_price, :total_items, :zip_code)
   end
 end

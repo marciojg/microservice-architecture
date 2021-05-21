@@ -3,7 +3,7 @@
 class Freight
   include ActiveModel::Model
 
-  BASE_PRICE = 10
+  BASE_PRICE = 10.freeze
 
   attr_accessor :total_price, :total_items, :zip_code
 
@@ -12,9 +12,17 @@ class Freight
     validates :zip_code, length: { is: 8 }
   end
 
-  def calculate
-    price = BASE_PRICE + (total_items + (total_price / 10) * 0.5)
+  validate :zip_code_valid
 
-    price
+  def calculate
+    BASE_PRICE + (total_items + (total_price / 10) * 0.5)
+  end
+
+  private
+
+  def zip_code_valid
+    return unless ViaCepService.call(self.zip_code)
+
+    errors.add :zip_code, :invalid, message: 'invalid zipcode, try again'
   end
 end

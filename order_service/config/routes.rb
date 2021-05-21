@@ -11,5 +11,7 @@ Rails.application.routes.draw do
       post :open, to: 'orders#open'
       post :closed, to: 'orders#close'
     end
+
+    post :freight, to: 'orders#freight', on: :member
   end
 end

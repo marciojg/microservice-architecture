@@ -48,6 +48,27 @@ class OrdersController < ApplicationController
     end
   end
 
+  # POST /orders/{id}/freight
+  def freight
+    zip_code = freight_params[:zip_code]
+
+    if zip_code.present?
+      order = Order.find(params[:id])
+
+      obj = {
+        total_price: order.total_price,
+        total_items: order.total_items,
+        zip_code: zip_code
+      }
+
+      DeliveryBoy.deliver(obj, key: order.cart_client_id, topic: 'CALCULATE_FREIGHT_CHANNEL')
+
+      render status: :ok
+    else
+      render json: { message: 'zip code error' }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_open_order
@@ -60,5 +81,9 @@ class OrdersController < ApplicationController
 
   def close_order_params
     params.require(:order).permit(:id)
+  end
+
+  def freight_params
+    params.require(:freight).permit(:zip_code)
   end
 end

@@ -30,6 +30,14 @@ gem 'ransack'
 gem 'rswag-api'
 gem 'rswag-ui'
 
+# Kafka
+gem 'racecar'
+gem 'delivery_boy'
+
+# Circuit Breaker
+gem 'viacep'
+gem 'circuitbox'
+
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'sqlite3'
