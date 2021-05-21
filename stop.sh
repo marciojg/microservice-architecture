@@ -10,6 +10,10 @@ echo 'down cart stack'
 docker-compose -f docker-compose-cart.yml down
 sleep 5
 
+echo 'down order stack'
+docker-compose -f docker-compose-order.yml down
+sleep 5
+
 echo 'down support stack'
 docker-compose -f docker-compose-support.yml down
 sleep 5

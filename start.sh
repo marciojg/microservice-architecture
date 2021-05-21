@@ -17,6 +17,10 @@ echo 'create cart stack'
 docker-compose -f docker-compose-cart.yml up -d
 sleep 5
 
+echo 'create order stack'
+docker-compose -f docker-compose-order.yml up -d
+sleep 5
+
 echo 'create support stack'
 docker-compose -f docker-compose-support.yml up -d
 sleep 5
