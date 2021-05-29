@@ -59,7 +59,7 @@ class OrdersController < ApplicationController
         total_price: order.total_price,
         total_items: order.total_items,
         zip_code: zip_code
-      }
+      }.to_json
 
       DeliveryBoy.deliver(obj, key: order.cart_client_id, topic: 'CALCULATE_FREIGHT_CHANNEL')
 

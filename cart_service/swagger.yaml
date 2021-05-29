@@ -80,7 +80,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Item'
-        402:
+        422:
           description: Retorna um erro de validação
           content:
             application/json:

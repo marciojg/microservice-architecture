@@ -20,7 +20,7 @@ class WishlistItemsConsumer < Racecar::Consumer
       wishlist_items.delete(obj)
       @cache.write(CACHE_NAME, wishlist_items)
     else
-      Rails.log.error("Type not found #{type}")
+      puts "Type not found #{type}"
     end
 
     puts 'CACHE UPDATED'

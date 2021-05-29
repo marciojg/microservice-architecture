@@ -128,6 +128,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OpenOrder'
+        422:
+          description: Retorna uma lista de erros ao tentar adicionar um pedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart_client_id:
+                    type: array
+                    items:
+                      - 999 is not a valid
       x-codegen-request-body-name: layout
   /orders/closed:
     get:
@@ -170,7 +181,7 @@ paths:
                     id:
                       type: integer
                       description: Id do pedido em aberto
-                      example: 10
+                      example: 1
         required: true
       responses:
         200:

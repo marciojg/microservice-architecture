@@ -8,8 +8,6 @@ class TotalItemsReplyConsumer < Racecar::Consumer
 
     order = Order.find_by!(cart_client_id: cart_client_id)
     order.update!(obj)
-
-    DeliveryBoy.deliver(order.cart_client_id, topic: 'CALCULATE_FREIGHT_CHANNEL')
   rescue JSON::ParserError, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     puts "Failed to process message in #{message.topic}/#{message.partition} at offset #{message.offset}: #{e}"
   end

@@ -120,4 +120,4 @@ services:
     networks:
       - default-net
     volumes:
-      - order_redis_volume:/usr/local/etc/redis
+      - order_redis_volume:/data

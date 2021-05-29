@@ -102,4 +102,4 @@ services:
     networks:
       - default-net
     volumes:
-      - wishlist_redis_volume:/usr/local/etc/redis
+      - wishlist_redis_volume:/data

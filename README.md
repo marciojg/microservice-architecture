@@ -1,100 +1,278 @@
-## TO-DO
-  - criar desenho da arquitetura
+Escrever uma intrudução aqui
 
+estou usando api compostition
 
-# Subir o projeto
+SAGA Event Sourcing
 
-Subir kafka
+---
+---
 
-```bash
-  docker-compose -f docker-compose-kafka.yml up
-```
+# Motivador
 
-Subir serviços
+Fazer o trabalho proposto [Trabalho](./PROBLEMA-PROPOSTO.md)
 
-```bash
-  docker-compose -f docker-compose-services.yml up
-```
+---
+---
 
-subir tudo
+# Arquitetura do projeto
+
+![Arquitetura do projeto](./architecture-service-tcd-amazon.jpg)
+
+---
+---
+
+# Link dos serviços
+
+- [KAFDROP](http://localhost:19000)
+- [PRODUCT_SERVICE](http://localhost:1001/api-docs/index.html)
+- [WISHLIST_SERVICE](http://localhost:1002/api-docs/index.html)
+- [CART_SERVICE](http://localhost:1006/api-docs/index.html)
+- [ORDER_SERVICE](http://localhost:1004/api-docs/index.html)
+- [FREIGHT_SERVICE](http://localhost:1005/api-docs/index.html)
+- [SUPPORT_SERVICE](http://localhost:1003/api-docs/index.html)
+
+---
+---
+
+# Passos para execução do projeto
+
+### Subir o projeto
+
 ```bash
 chmod +x start.sh
 start.sh
 ```
 
+---
+### Criar categoria
 
--------------------------------
-# frozen_string_literal: true
+```bash
+curl -X POST "http://localhost:1001/categories" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"category\":{\"name\":\"Masculino Adulto\"}}"
+```
 
-require 'kafka'
+---
+### Criar 2 produtos
 
-# https://github.com/confluentinc/examples/blob/6.1.1-post/clients/cloud/ruby/producer.rb
-class KafkaConnector
-  BROKERS = ['kafka:29092'].freeze
-  SEED_BROKERS = 'kafka:29092'.freeze
-  CLIENT_ID = 'PRODUCT_SERVICE'.freeze
+```bash
+curl -X POST "http://localhost:1001/products" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"product\":{\"name\":\"Camisa Azul\",\"value\":16.097,\"category_id\":1}}"
+```
 
-  def self.client
-    @client ||= Kafka.new(BROKERS, seed_brokers: SEED_BROKERS, client_id: CLIENT_ID)
-  end
+```bash
+curl -X POST "http://localhost:1001/products" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"product\":{\"name\":\"Camisa Vermelha\",\"value\":11.30,\"category_id\":1}}"
+```
 
-  # https://github.com/zendesk/ruby-kafka#buffering-and-error-handling
-  # Design Pattern Circuit Breaker implementado por default pela lib ruby-kafka usando buffer de mensagem em memória
-  def self.produce(data, key:, topic:)
-    @producer ||= client.async_producer(
-      delivery_threshold: 5,            # Trigger a delivery once 5 messages have been buffered.
-      delivery_interval: 0.005,         # Trigger a delivery every 0.005 seconds.
-      max_buffer_size: 5_000,           # Allow at most 5K messages to be buffered.
-      max_buffer_bytesize: 100_000_000, # Allow at most 100MB to be buffered.
-      required_acks: :all,              # This is the default: all replicas must acknowledge.
-      max_retries: 5,                   # The number of retries when attempting to deliver messages.
-      retry_backoff: 5,                 # The number of seconds to wait between retries. In order to handle longer periods of Kafka being unavailable, increase this number.
-    )
-    @producer.produce(data, key: key, topic: topic)
-  rescue Kafka::Error => e
-    Rails.logger.error("Failed to produce data #{data}: #{e.message}")
-  ensure
-    @producer.deliver_messages
-    @producer.shutdown
-  end
+---
+### Conferir produto postado no tópico do Kafka para montar um cache de itens no `wishlist_service` e `cart_service`
+\
+[PRODUCTS_CHANNEL](http://localhost:19000/topic/PRODUCTS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
 
-  def self.consume(topic, default_offset: :earliest)
-    @consumer ||= client.consumer(group_id: "#{CLIENT_ID}-CONSUMER")
+---
+### Visualizar os produtos de um determinado gênero
 
-    @consumer.subscribe(topic, default_offset: default_offset)
+```bash
+curl -X GET "http://localhost:1001/categories/1/products?popular=false" -H  "accept: application/json"
+```
 
-    @consumer.each_message do |message|
-      record_key = message.key
-      record_value = message.value
+---
+### Visualizar os detalhes de cada produto
 
-      puts "Consumed record with key #{record_key} and value #{record_value}"
-    end
+```bash
+curl -X GET "http://localhost:1001/products/1" -H  "accept: application/json"
+```
 
-    @consumer
-    # at_exit do
-    #   @consumer.stop # Leave group and commit final offsets
-    # end
-  rescue Kafka::Error => e
-    puts "Consuming messages from #{topic} failed: #{e.message}"
-  end
-end
+```bash
+curl -X GET "http://localhost:1001/products/2" -H  "accept: application/json"
+```
 
--------------------------------
-  # config.brokers = ServiceDiscovery.find("kafka-brokers")
--------------------------------
-  CACHE_NAME = 'Products#cache'.freeze
+---
+### Buscar um produto por palavra-chave
 
-  subscribes_to 'products'
-  @cache = Rails.cache.read('Products#cache')
-# rafatorar isso 'Products#cache'
-@cache.read(CACHE_NAME)
--------------------------------
+```bash
+curl -X GET "http://localhost:1001/products?popular=false&q%5Bname_cont%5D=azul" -H  "accept: application/json"
+```
 
+---
+### Marcar um item como mais visto
 
-docker-compose logs -f -t
-docker-compose -f docker-compose-freight.yml logs -f -t
+```bash
+curl -X GET "http://localhost:1001/products/1" -H  "accept: application/json"
+```
 
------------------
-estou usando api compostition
+---
+### Exibir os produtos mais vistos por categorias
 
-SAGA Event Sourcing
+```bash
+curl -X GET "http://localhost:1001/categories/1/products?popular=true" -H  "accept: application/json"
+```
+
+---
+### Criar uma lista de desejo vazia
+
+```bash
+curl -X POST "http://localhost:1002/wishlists" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"wishlist\":{\"client_id\":100}}"
+```
+
+---
+### Adicionar itens na sua lista de desejo
+
+```bash
+curl -X POST "http://localhost:1002/wishlists/1/items" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"item\":{\"product_id\":1}}"
+```
+
+---
+### Tentar adicionar um item na lista de desejo com produto inválido
+
+```bash
+curl -X POST "http://localhost:1002/wishlists/1/items" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"item\":{\"product_id\":999}}"
+```
+
+---
+### Conferir item da lista de desejo postado no tópico do Kafka para montar um cache de itens no `cart_service`
+\
+[WISHLIST_ITEMS_CHANNEL](http://localhost:19000/topic/WISHLIST_ITEMS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Adicionar um item no carrinho
+
+```bash
+curl -X POST "http://localhost:1006/carts/100/items" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"item\":{\"product_id\":2,\"amount\":3}}"
+```
+
+---
+### Tentar adicionar um item no carrinho com produto inválido
+
+```bash
+curl -X POST "http://localhost:1006/carts/100/items" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"item\":{\"product_id\":99,\"amount\":3}}"
+```
+
+---
+### Mover um item da lista de desejo para o carrinho
+
+```bash
+curl -X POST "http://localhost:1006/carts/100/items" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"item\":{\"wishlist_item_id\":1,\"amount\":5}}"
+```
+
+---
+### Conferir item da lista de desejo postado no tópico do Kafka para ser removido da lista de desejo correspondente
+\
+[DELETE_WISHLIST_ITEM_CHANNEL](http://localhost:19000/topic/DELETE_WISHLIST_ITEM_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir que o item foi removido da `lista de desejo`
+
+```bash
+curl -X GET "http://localhost:1002/wishlists/1/items" -H  "accept: application/json"
+```
+
+---
+### Conferir que o item foi marcado para ser removido na fila do kafka que mantem o cache de itens
+\
+[WISHLIST_ITEMS_CHANNEL](http://localhost:19000/topic/WISHLIST_ITEMS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Abrir um pedido
+
+```bash
+curl -X POST "http://localhost:1004/orders/open" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"order\":{\"cart_client_id\":100}}"
+```
+
+---
+### Tentatar criar um pedido com um carrinho/cliente inválido
+
+```bash
+curl -X POST "http://localhost:1004/orders/open" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"order\":{\"cart_client_id\":225}}"
+```
+
+---
+### Conferir pedido postado no tópico do Kafka para montar um cache de pedidos no `support_service`
+\
+[ORDERS_CHANNEL](http://localhost:19000/topic/ORDERS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir que o pedido ao ser criado solicita o total de itens no carrinho para o serviço `cart_service`
+\
+[TOTAL_ITEMS_CHANNEL](http://localhost:19000/topic/TOTAL_ITEMS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir a resposta do total de itens no carrinho feito pelo serviço `cart_service` para o serviço `order_service`
+\
+[TOTAL_ITEMS_REPLY_CHANNEL](http://localhost:19000/topic/TOTAL_ITEMS_REPLY_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Verificar o valor total e a quantidade total de itens no pedido, que são calculados com base no que há no carrinho
+
+```bash
+curl -X GET "http://localhost:1004/orders/1" -H  "accept: application/json"
+```
+
+---
+### Calcular o frete de uma compra com um CEP válido
+
+```bash
+curl -X POST "http://localhost:1004/orders/1/freight" -H  "accept: */*" -H  "Content-Type: application/json" -d "{\"freight\":{\"zip_code\":\"02512000\"}}"
+```
+
+---
+### Tentar calcular o frete de uma compra com um CEP inválido
+
+```bash
+curl -X POST "http://localhost:1004/orders/1/freight" -H  "accept: */*" -H  "Content-Type: application/json" -d "{\"freight\":{\"zip_code\":\"02599999\"}}"
+```
+
+---
+### Conferir o pedido cálculo de frete postado no tópico do Kafka para o serviço `freight_service`
+\
+[CALCULATE_FREIGHT_CHANNEL](http://localhost:19000/topic/CALCULATE_FREIGHT_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir o retorno do serviço `freight_service` postado no tópico referente ao pedido de cálculo de frete que será consumido pelo serviço `order_service`
+\
+[CALCULATE_FREIGHT_REPLY_CHANNEL](http://localhost:19000/topic/CALCULATE_FREIGHT_REPLY_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Acompanhar os dados do seu pedido, com todos os valores calculados
+
+```bash
+curl -X GET "http://localhost:1004/orders/1" -H  "accept: application/json"
+```
+
+---
+### Encerrar um pedido
+
+```bash
+curl -X POST "http://localhost:1004/orders/closed" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"order\":{\"id\":1}}"
+```
+
+---
+### Conferir carrinho postado no tópico do Kafka para que seus itens sejam removidos em `cart_service`
+\
+[DELETE_CART_ITEMS_CHANNEL](http://localhost:19000/topic/DELETE_CART_ITEMS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir carrinho vazio
+
+```bash
+curl -X GET "http://localhost:1006/carts/100/items" -H  "accept: application/json"
+```
+
+---
+### Abrir um chamado técnico de algum problema que está acontecendo
+
+```bash
+curl -X POST "http://localhost:1003/tickets/open" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"ticket\":{\"description\":\"Problema X Y Z\",\"client_id\":100,\"order_id\":1}}"
+```
+
+---
+### Encerrar um chamado técnico
+
+```bash
+curl -X POST "http://localhost:1003/tickets/closed" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"ticket\":{\"id\":1}}"
+```
+
+---
+### Derrubar o projeto
+
+```bash
+chmod +x stop.sh
+stop.sh
+```

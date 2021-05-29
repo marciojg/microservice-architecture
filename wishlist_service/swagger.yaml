@@ -212,7 +212,7 @@ paths:
                     product_id:
                       type: integer
                       description: Id do produto associado
-                      example: 10
+                      minimum: 1
         required: true
       responses:
         201:
@@ -227,6 +227,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Item'
+        422:
+          description: Retorna uma lista de erros ao tentar adicionar um item na `lista de desejo`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product_id:
+                    type: array
+                    items:
+                      - 999 is not a valid
       x-codegen-request-body-name: layout
 components:
   schemas:
@@ -265,7 +276,7 @@ components:
             product_id:
               type: integer
               description: Id do produto associado
-              example: 10
+              example: 1
             value:
               type: number
               description: Valor do item associado

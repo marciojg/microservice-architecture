@@ -20,7 +20,7 @@ class ProductsConsumer < Racecar::Consumer
       products.delete(obj)
       @cache.write(CACHE_NAME, products)
     else
-      Rails.log.error("Type not found #{type}")
+      puts "Type not found #{type}"
     end
 
     puts 'CACHE UPDATED'

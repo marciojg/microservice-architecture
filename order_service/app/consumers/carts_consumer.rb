@@ -20,7 +20,7 @@ class CartsConsumer < Racecar::Consumer
       list.delete(obj)
       @cache.write(CACHE_NAME, list)
     else
-      Rails.log.error("Type not found #{type}")
+      puts "Type not found #{type}"
     end
 
     puts 'CACHE UPDATED'

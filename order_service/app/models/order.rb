@@ -8,6 +8,11 @@ class Order < ApplicationRecord
     delivery_message('TOTAL_ITEMS_CHANNEL')
   end
 
+  after_update do
+    delivery_message('CART_ITEMS_REMOVE_CHANNEL') if self.closed?
+    delivery_message('ORDERS_CHANNEL', 'CLOSED')  if self.closed?
+  end
+
   enum status: %i[open closed]
 
   validates :cart_client_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 },
@@ -17,15 +22,12 @@ class Order < ApplicationRecord
   def close
     self.status = :closed
     self.save
-
-    delivery_message('CART_ITEMS_REMOVE_CHANNEL')
-    delivery_message('ORDERS_CHANNEL', 'CLOSED')
   end
 
   private
 
   def delivery_message(topic, key = nil)
-    obj = { order_id: self.id, cart_client_id: self.cart_client_id }
+    obj = { order_id: self.id, cart_client_id: self.cart_client_id }.to_json
 
     DeliveryBoy.deliver(obj, key: key, topic: topic)
   end

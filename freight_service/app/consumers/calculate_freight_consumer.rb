@@ -9,13 +9,13 @@ class CalculateFreightConsumer < Racecar::Consumer
     freight = Freight.new(calculate_params)
 
     if freight.valid?
-      result = { client_id: client_id, freight_value: freight.calculate }.to_json
+      result = { client_id: client_id, freight_value: freight.calculate }
 
-      DeliveryBoy.deliver(result, key: 'OK', topic: 'CALCULATE_FREIGHT_CHANNEL_REPLY')
+      DeliveryBoy.deliver(result.to_json, key: 'OK', topic: 'CALCULATE_FREIGHT_REPLY_CHANNEL')
     else
-      result = { client_id: client_id }.merge freight.errors.to_h
+      result = { client_id: client_id }.merge freight.errors.to_hash
 
-      DeliveryBoy.deliver(result.to_json, key: 'ERROR', topic: 'CALCULATE_FREIGHT_CHANNEL_REPLY')
+      DeliveryBoy.deliver(result.to_json, key: 'ERROR', topic: 'CALCULATE_FREIGHT_REPLY_CHANNEL')
     end
   rescue JSON::ParserError, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     puts "Failed to process message in #{message.topic}/#{message.partition} at offset #{message.offset}: #{e}"

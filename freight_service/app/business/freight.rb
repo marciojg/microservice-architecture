@@ -15,14 +15,14 @@ class Freight
   validate :zip_code_valid
 
   def calculate
-    BASE_PRICE + (total_items + (total_price / 10) * 0.5)
+    BASE_PRICE + (total_items + (total_price.to_f / 10) * 0.5)
   end
 
   private
 
   def zip_code_valid
-    return unless ViaCepService.call(self.zip_code)
+    return if ViaCepService.call(zip_code)
 
-    errors.add :zip_code, :invalid, message: 'invalid zipcode, try again'
+    errors.add :zip_code, :invalid, message: "invalid zipcode %{value}, try again"
   end
 end

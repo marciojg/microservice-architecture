@@ -78,4 +78,4 @@ services:
     networks:
       - default-net
     volumes:
-      - support_redis_volume:/usr/local/etc/redis
+      - support_redis_volume:/data

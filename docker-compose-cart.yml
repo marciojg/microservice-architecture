@@ -142,4 +142,4 @@ services:
     networks:
       - default-net
     volumes:
-      - cart_redis_volume:/usr/local/etc/redis
+      - cart_redis_volume:/data

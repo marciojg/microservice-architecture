@@ -14,13 +14,15 @@ class ViaCepService
   end
 
   def check_zip_code
-    result = false
-
     circuit.run(circuitbox_exceptions: false) do
-      result = ViaCep::Address.new(@zip_code, timeout: 1).is_a? ViaCep::Address
-    end
+      begin
+        return ViaCep::Address.new(@zip_code, timeout: 1).is_a? ViaCep::Address
+      rescue ViaCep::ApiRequestError => e
+        puts "erro no CEP #{e}"
 
-    result
+        return false
+      end
+    end
   end
 
   private

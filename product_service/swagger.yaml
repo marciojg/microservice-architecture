@@ -27,6 +27,12 @@ paths:
         schema:
           type: string
           default: azul
+      - name: q[category_id_eq]
+        in: query
+        description: Exemplo de um filtro ransack que filtra produtos da categoria `Masculino Adulto`
+        schema:
+          type: number
+          default: 1
       responses:
         200:
           description: Retorna uma lista de produtos
