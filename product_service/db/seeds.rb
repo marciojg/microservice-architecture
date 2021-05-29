@@ -6,7 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Category.delete_all
+# Category.delete_all
 
-Category.create(name: 'masculino');
-Category.create(name: 'feminino');
+# Category.create(name: 'masculino');
+# Category.create(name: 'feminino');

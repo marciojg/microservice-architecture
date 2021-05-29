@@ -1,3 +1,7 @@
+echo 'down kafka stack'
+docker-compose -f docker-compose-kafka.yml down -v
+sleep 5
+
 echo 'down product stack'
 docker-compose -f docker-compose-product.yml down -v
 sleep 5

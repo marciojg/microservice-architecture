@@ -40,7 +40,7 @@ Fazer o trabalho proposto [Trabalho](./PROBLEMA-PROPOSTO.md)
 
 ```bash
 chmod +x start.sh
-start.sh
+sh start.sh
 ```
 
 ---
@@ -237,25 +237,6 @@ curl -X GET "http://localhost:1004/orders/1" -H  "accept: application/json"
 ```
 
 ---
-### Encerrar um pedido
-
-```bash
-curl -X POST "http://localhost:1004/orders/closed" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"order\":{\"id\":1}}"
-```
-
----
-### Conferir carrinho postado no tópico do Kafka para que seus itens sejam removidos em `cart_service`
-\
-[DELETE_CART_ITEMS_CHANNEL](http://localhost:19000/topic/DELETE_CART_ITEMS_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
-
----
-### Conferir carrinho vazio
-
-```bash
-curl -X GET "http://localhost:1006/carts/100/items" -H  "accept: application/json"
-```
-
----
 ### Abrir um chamado técnico de algum problema que está acontecendo
 
 ```bash
@@ -270,9 +251,28 @@ curl -X POST "http://localhost:1003/tickets/closed" -H  "accept: application/jso
 ```
 
 ---
+### Encerrar um pedido
+
+```bash
+curl -X POST "http://localhost:1004/orders/closed" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"order\":{\"id\":1}}"
+```
+
+---
+### Conferir carrinho postado no tópico do Kafka para que seus itens sejam removidos em `cart_service`
+\
+[CART_ITEMS_REMOVE_CHANNEL](http://localhost:19000/topic/CART_ITEMS_REMOVE_CHANNEL/messages?partition=0&offset=0&count=100&keyFormat=DEFAULT&format=DEFAULT)
+
+---
+### Conferir carrinho vazio
+
+```bash
+curl -X GET "http://localhost:1006/carts/100/items" -H  "accept: application/json"
+```
+
+---
 ### Derrubar o projeto
 
 ```bash
 chmod +x stop.sh
-stop.sh
+sh stop.sh
 ```
