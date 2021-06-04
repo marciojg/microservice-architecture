@@ -33,6 +33,9 @@ gem 'rswag-ui'
 # Kafka
 gem 'delivery_boy'
 
+# Service configuration
+gem 'etcdv3'
+
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'sqlite3'

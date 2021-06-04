@@ -26,6 +26,10 @@ echo 'down freight stack'
 docker-compose -f docker-compose-freight.yml down -v
 sleep 5
 
+echo 'down etcd stack'
+docker-compose -f docker-compose-etcd.yml down -v
+sleep 5
+
 echo 'remove network'
 docker network rm default-net
 

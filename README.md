@@ -1,15 +1,38 @@
-Escrever uma intrudução aqui
+Este projeto é um exemplo de uma solução de "e-commerce" usando padrões de arquitetura, com 2 principais, que são: [SAGA with Choreography](https://microservices.io/patterns/data/saga.html) e [Event Sourcing](https://microservices.io/patterns/data/event-sourcing.html).
 
-estou usando api compostition
+Ele foi criado visando 4 pilares.
 
-SAGA Event Sourcing
+- Resiliência
+\
+Neste projeto foram usados alguns artifícios para manter a resiliência dos serviços, como:
+
+  - [Circuit Breaker](https://microservices.io/patterns/reliability/circuit-breaker.html):
+    - A comunicação entre os serviços e o kafka. [Producers](./order_service/config/delivery_boy.rb) e [Consumers](./order_service/config/racecar.rb).
+    - A comunicação entre o serviço de frete e a api do [Viacep](./freight_service/app/services/via_cep_service.rb).
+  - Uso do [Redis](https://redis.io/) para guardar cache de informações entre serviços.
+  - [Comunicação assíncrona](https://www.mitrais.com/news-updates/asynchronous-communication-between-microservices-with-apache-kafka/) entre os serviços.
+
+- [Mensageria](https://microservices.io/patterns/data/event-sourcing.html)
+\
+Com o objetivo de manter a máxima resiliência da solução e o mais alto nível possível de disponibilidade foi usado [Kafka](https://kafka.apache.org/) como um message broker o que permite a comunicação entre os serviços de maneira assíncrona.
+
+- [Gerenciamento de Configuração](https://microservices.io/patterns/externalized-configuration.html)
+\
+No nosso cenário não foi possível uma implementação aprofundada por uma limitação na linguagem usada no serviço. De todo modo, foi implementado um exemplo de solução usando [ETCD](https://etcd.io/) como serviço que responde chave/valor e o serviço de produtos [capturando dados](./product_service/config/delivery_boy.rb) de comunicação com o Kafka através de uma chamada ao etcd.
+
+- [Service Discovery](https://microservices.io/patterns/client-side-discovery.html)
+\
+No nosso cenário não foi identificado uma necessidade latente de possuirmos uma implementação deste pilar, pois nenhum serviço conversa com outro diretamente. Ou seja, como a comunicação entre os serviços é assíncrona, vimos que este pilar foi "atendido" quando ativamos o Kafka.
+\
+\
+Entretando, uma maneira de atender a este pilar de maneira elegante seria migrar nosso projeto hoje em [docker-compose](https://docs.docker.com/compose/) para [kubernetes](https://kubernetes.io/pt-br/) que nos entregaria soluções de service disovery muito eficiente e de fácil configuração.
 
 ---
 ---
 
-# Motivador
+# Motivadores
 
-Fazer o trabalho proposto [Trabalho](./PROBLEMA-PROPOSTO.md)
+[PROBLEMA PROPOSTO 1](./PROBLEMA-PROPOSTO-1.md)
 
 ---
 ---
@@ -103,6 +126,13 @@ curl -X GET "http://localhost:1001/products/1" -H  "accept: application/json"
 
 ```bash
 curl -X GET "http://localhost:1001/categories/1/products?popular=true" -H  "accept: application/json"
+```
+
+---
+### Conferir chaves criadas no Configuration Manager [ETCD](https://etcd.io/)
+
+```bash
+docker-compose -f docker-compose-etcd.yml exec etcd /bin/sh -c "etcdctl --endpoints http://etcd:2379 get development/product_service --prefix"
 ```
 
 ---

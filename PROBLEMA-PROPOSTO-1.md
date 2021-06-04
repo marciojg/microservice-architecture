@@ -24,7 +24,7 @@
   - Documentação do sistema e de suas classes/métodos;
   - Código limpo;
   - Capacidade de abstração do problema dado;
-  Corretude da Solução.
+  - Corretude da Solução;
 
 # Caso Amazon
 Suponho que você seja contratado para desenvolver algunas funcionalidades do e-commerce da Amazon, alguns desejos dos usuários são descritos abaixo e você deve desenhar e implementar uma solução baseada em Microserviços.

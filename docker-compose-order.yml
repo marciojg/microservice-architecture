@@ -54,7 +54,7 @@ services:
       - -c
       - |
         rm -rf tmp/pids
-        bundle exec rake db:migrate db:seed
+        rails db:migrate db:seed
         rails server -b 0.0.0.0 -p 3000
 
   order_consumer1:
