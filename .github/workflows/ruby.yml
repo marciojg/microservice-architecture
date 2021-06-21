@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.6', '2.7.0', '3.0']
+        ruby-version: ['2.7.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -34,6 +34,7 @@ jobs:
     - name: order_service - Bundle install
       working-directory: ./order_service
       run: bundle install
+
     - name: order_service - Run tests
       working-directory: ./order_service
       run: RAILS_ENV=test bundle exec rspec
