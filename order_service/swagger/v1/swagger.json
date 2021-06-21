@@ -1,0 +1,208 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API V1",
+    "version": "v1"
+  },
+  "paths": {
+    "/orders/open": {
+      "post": {
+        "summary": "Cria um pedido",
+        "tags": [
+          "Orders"
+        ],
+        "description": "Cria um pedido e seus detalhes",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Order created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/open_order/post/response"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Retorna uma lista de erros ao tentar adicionar um pedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/errors_object"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/open_order/post/request"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista de pedidos em aberto",
+        "tags": [
+          "Orders"
+        ],
+        "description": "Lista os pedidos em aberto, com diversas possibilidades de filtros usando o ransack (https://github.com/activerecord-hackery/ransack)",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna uma lista de pedidos em aberto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/open_order/get"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://{defaultHost}",
+      "variables": {
+        "defaultHost": {
+          "default": "localhost:1004"
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "errors_object": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "$ref": "#/components/schemas/errors_map"
+          }
+        }
+      },
+      "errors_map": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "open_order": {
+        "post": {
+          "request": {
+            "type": "object",
+            "properties": {
+              "order": {
+                "type": "object",
+                "properties": {
+                  "cart_client_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              },
+              "required": [
+                "cart_client_id"
+              ]
+            }
+          },
+          "response": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 0
+              },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "example": "open"
+                  },
+                  "cart_client_id": {
+                    "type": "integer",
+                    "example": 100
+                  },
+                  "freight_value": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "total_price": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "total_items": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "cart_client_id",
+              "freight_value",
+              "total_price",
+              "total_items",
+              "created_at",
+              "updated_at"
+            ]
+          }
+        },
+        "get": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/open_order/post/response"
+          }
+        }
+      }
+    }
+  }
+}
