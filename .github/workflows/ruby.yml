@@ -31,5 +31,6 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Run tests
+    - name: Run tests in order_service
+      working-directory: ./order_service 
       run: RAILS_ENV=test bundle exec rspec
