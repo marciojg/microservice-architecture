@@ -1,4 +1,5 @@
 [![Order Service](https://github.com/marciojg/microservice-architecture/actions/workflows/order_service.yml/badge.svg?branch=main&event=push)](https://github.com/marciojg/microservice-architecture/actions/workflows/order_service.yml)
+[![license](https://img.shields.io/github/license/marciojg/microservice-architecture.svg)]()
 
 Este projeto é um exemplo de uma solução de "e-commerce" usando padrões de arquitetura, com 2 principais, que são: [SAGA with Choreography](https://microservices.io/patterns/data/saga.html) e [Event Sourcing](https://microservices.io/patterns/data/event-sourcing.html).
 
