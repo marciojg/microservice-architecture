@@ -38,13 +38,18 @@ jobs:
       working-directory: ./order_service
       run: RAILS_ENV=test bundle exec rspec
 
-  build:
+  build_and_push:
     needs: test
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
+    - name: Build the Docker image and push to Docker Hub
+      env:
+        IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/order_service:latest
       working-directory: ./order_service
-      run: docker build . --file Dockerfile --tag order_service:latest
+      run: |
+        docker build . --file Dockerfile --tag $IMAGE
+        docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker push $IMAGE
