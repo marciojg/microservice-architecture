@@ -49,10 +49,9 @@ Entretando, uma maneira de atender a este pilar de maneira elegante seria migrar
 ---
 
 # Vídeo do projeto
-
-![][link]
-
-[link]: https://cdn.loom.com/sessions/thumbnails/6c4451ffae364fafb445c689010ea1f5-with-play.gif
+[Vídeo completo](https://www.loom.com/share/4c6401db87fb4cd5b7d6a4e727d86e1b)
+\
+![](https://cdn.loom.com/sessions/thumbnails/6c4451ffae364fafb445c689010ea1f5-with-play.gif)
 
 ---
 ---
