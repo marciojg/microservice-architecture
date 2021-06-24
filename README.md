@@ -48,6 +48,15 @@ Entretando, uma maneira de atender a este pilar de maneira elegante seria migrar
 ---
 ---
 
+# Vídeo do projeto
+
+![][link]
+
+[link]: https://cdn.loom.com/sessions/thumbnails/6c4451ffae364fafb445c689010ea1f5-with-play.gif
+
+---
+---
+
 # Link dos serviços
 
 - [KAFDROP](http://localhost:19000)
