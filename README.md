@@ -318,3 +318,34 @@ curl -X GET "http://localhost:1006/carts/100/items" -H  "accept: application/jso
 chmod +x stop.sh
 sh stop.sh
 ```
+
+---
+---
+
+# Links Úteis
+
+- https://bitbucket.org/tadeu-barbosa-cbds/fiap-microservices-exercicios/src/master/
+- http://stytex.de/blog/2016/01/18/spring-cloud-sidecar-applications/
+- https://github.com/yammer/circuitbox
+- https://github.com/jnunemaker/resilient
+- https://medium.com/onebyte-llc/distributed-systems-configuration-management-using-apache-zookeeper-2121b231a4a4
+- https://github.com/FlowerWrong/scc_ruby
+- https://github.com/davissp14/etcdv3-ruby
+- https://github.com/conduktor/kafka-stack-docker-compose
+- https://github.com/zendesk/delivery_boy
+- https://github.com/zendesk/ruby-kafka
+- https://github.com/zendesk/racecar
+- https://www.instaclustr.com/support/documentation/kafka/accessing-and-using-kafka/use-kafka-with-ruby
+- https://blog.blueapron.io/developing-with-kafka-and-rails-applications-783799e13489
+- https://medium.com/zendesk-engineering/kafka-on-ruby-fdab12302146
+- https://peaonunes.medium.com/circuitbox-how-to-circuit-breaker-in-ruby-3413fd9789e6
+- https://imasters.com.br/back-end/aprenda-a-aumentar-resiliencia-de-suas-aplicacoes-ruby
+
+## Para futuro
+- http://maratgaliev.com/rails-kafka
+- https://rom-rb.org/learn/
+- https://dry-rb.org/
+- https://github.com/karafka/karafka
+- https://github.com/ryanlecompte/redis_failover
+- http://stytex.de/blog/2016/01/18/spring-cloud-sidecar-applications
+- https://github.com/xetys/microservices-sidecar-example
