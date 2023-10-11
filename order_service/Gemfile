@@ -27,8 +27,8 @@ gem 'rack-cors'
 
 gem 'ransack'
 
-gem 'rswag-api'
-gem 'rswag-ui'
+gem 'rswag-api', '>= 2.11.0'
+gem 'rswag-ui', '>= 2.11.0'
 
 # Kafka
 gem 'racecar'
@@ -49,7 +49,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'rspec-rails'
-  gem 'rswag-specs'
+  gem 'rswag-specs', '>= 2.11.0'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
