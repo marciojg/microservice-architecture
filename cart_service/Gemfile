@@ -27,8 +27,8 @@ gem 'rack-cors'
 
 gem 'ransack'
 
-gem 'rswag-api'
-gem 'rswag-ui'
+gem 'rswag-api', '>= 2.11.0'
+gem 'rswag-ui', '>= 2.11.0'
 
 # Kafka
 gem 'racecar'
