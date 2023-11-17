@@ -37,7 +37,7 @@ gem 'delivery_boy'
 gem 'etcdv3'
 
 group :development, :test do
-  gem 'factory_bot_rails'
+  gem 'factory_bot_rails', '>= 6.3.0'
   gem 'sqlite3'
   gem 'pry'
   gem 'listen'
