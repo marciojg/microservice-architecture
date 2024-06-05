@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 6.1.3', '>= 6.1.3.2'
+gem 'rails', '~> 6.1.7', '>= 6.1.7.8'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
 # Use Puma as the app server
@@ -27,8 +27,8 @@ gem 'rack-cors'
 
 gem 'ransack'
 
-gem 'rswag-api'
-gem 'rswag-ui'
+gem 'rswag-api', '>= 2.5.0'
+gem 'rswag-ui', '>= 2.5.0'
 
 # Kafka
 gem 'racecar'
@@ -39,17 +39,17 @@ gem 'redis'
 gem 'hiredis'
 
 group :development, :test do
-  gem 'factory_bot_rails'
+  gem 'factory_bot_rails', '>= 6.3.0'
   gem 'sqlite3'
   gem 'pry'
   gem 'listen'
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'pry-highlight'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '>= 5.0.2', '>= 5.0.2'
   gem 'shoulda-matchers'
   gem 'rspec-rails'
-  gem 'rswag-specs'
+  gem 'rswag-specs', '>= 2.5.0'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
