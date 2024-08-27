@@ -34,7 +34,7 @@ gem 'rswag-ui'
 gem 'delivery_boy'
 
 # Service configuration
-gem 'etcdv3'
+gem 'etcdv3', '>= 0.11.3'
 
 group :development, :test do
   gem 'factory_bot_rails'
